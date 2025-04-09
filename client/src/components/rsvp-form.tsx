@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useState, useEffect } from "react";
+import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { rsvpFormSchema } from "@shared/schema";
@@ -26,16 +26,24 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { Loader2, Phone, Instagram, Twitter, Facebook } from "lucide-react";
+import { Loader2, Phone, Instagram, Twitter, Facebook, Plus, Minus, Users } from "lucide-react";
 
-type FormValues = z.infer<typeof rsvpFormSchema>;
+// Extend the form schema to include guest names
+const extendedFormSchema = rsvpFormSchema.extend({
+  guestNames: z.array(z.object({
+    name: z.string().min(1, "Guest name is required")
+  })).optional(),
+});
+
+type FormValues = z.infer<typeof extendedFormSchema>;
 
 const RsvpForm = () => {
   const { toast } = useToast();
+  const [guestCount, setGuestCount] = useState(1);
   
   // Initialize react-hook-form with zod validation
   const form = useForm<FormValues>({
-    resolver: zodResolver(rsvpFormSchema),
+    resolver: zodResolver(extendedFormSchema),
     defaultValues: {
       name: "",
       email: "",
@@ -44,13 +52,51 @@ const RsvpForm = () => {
       guestCount: 1,
       dietaryRestrictions: "",
       message: "",
+      guestNames: [{ name: "" }]
     },
   });
+  
+  // Setup field array for dynamic guest names
+  const { fields, append, remove } = useFieldArray({
+    control: form.control,
+    name: "guestNames"
+  });
+  
+  // Watch the guestCount field to update dynamic fields
+  const watchGuestCount = form.watch("guestCount");
+  
+  // Update guest name fields when guestCount changes
+  useEffect(() => {
+    const newCount = typeof watchGuestCount === 'number' ? watchGuestCount : 1;
+    setGuestCount(newCount);
+    
+    // Add or remove guest name fields based on guestCount
+    if (newCount > fields.length) {
+      // Add fields if needed
+      for (let i = fields.length; i < newCount; i++) {
+        append({ name: "" });
+      }
+    } else if (newCount < fields.length) {
+      // Remove fields if needed
+      for (let i = fields.length - 1; i >= newCount; i--) {
+        remove(i);
+      }
+    }
+  }, [watchGuestCount, fields.length, append, remove]);
   
   // Setup mutation for form submission
   const { mutate, isPending } = useMutation({
     mutationFn: async (data: FormValues) => {
-      const response = await apiRequest("POST", "/api/rsvp", data);
+      // Format data for API submission
+      const submissionData = {
+        ...data,
+        // Convert guestNames array to a string if present
+        additionalGuests: data.guestNames && data.guestNames.length > 1 
+          ? data.guestNames.slice(1).map(g => g.name).join(", ")
+          : undefined
+      };
+      
+      const response = await apiRequest("POST", "/api/rsvp", submissionData);
       return response.json();
     },
     onSuccess: () => {
@@ -244,26 +290,60 @@ const RsvpForm = () => {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="font-['Cormorant_Garamond'] text-[#4a5568]">Number of Guests (including yourself)</FormLabel>
-                    <Select
-                      onValueChange={(value) => field.onChange(parseInt(value))}
-                      defaultValue={field.value?.toString() || "1"}
-                    >
-                      <FormControl>
-                        <SelectTrigger className="w-full border border-[#e8c1c8] rounded-md focus:outline-none focus:ring-2 focus:ring-[#e8c1c8]">
-                          <SelectValue placeholder="Select number of guests" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="1">1</SelectItem>
-                        <SelectItem value="2">2</SelectItem>
-                        <SelectItem value="3">3</SelectItem>
-                        <SelectItem value="4">4</SelectItem>
-                      </SelectContent>
-                    </Select>
+                    <div className="flex items-center space-x-2">
+                      <Select
+                        onValueChange={(value) => field.onChange(parseInt(value))}
+                        defaultValue={field.value?.toString() || "1"}
+                      >
+                        <FormControl>
+                          <SelectTrigger className="w-full border border-[#e8c1c8] rounded-md focus:outline-none focus:ring-2 focus:ring-[#e8c1c8]">
+                            <SelectValue placeholder="Select number of guests" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="1">1</SelectItem>
+                          <SelectItem value="2">2</SelectItem>
+                          <SelectItem value="3">3</SelectItem>
+                          <SelectItem value="4">4</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <div className="flex items-center justify-center w-10 h-10 rounded-full bg-[#fff5f7] text-[#6b0f2b]">
+                        <Users className="h-5 w-5" />
+                      </div>
+                    </div>
                     <FormMessage className="text-red-500 text-sm mt-1" />
                   </FormItem>
                 )}
               />
+              
+              {/* Guest Names Fields - Dynamic based on guest count */}
+              {guestCount > 0 && (
+                <div className="space-y-4 p-4 bg-[#fff5f7] rounded-md border border-[#e8c1c8]">
+                  <h4 className="font-['Cormorant_Garamond'] text-lg text-[#6b0f2b]">Guest{guestCount > 1 ? 's' : ''} Information</h4>
+                  
+                  {fields.map((field, index) => (
+                    <FormField
+                      key={field.id}
+                      control={form.control}
+                      name={`guestNames.${index}.name`}
+                      render={({ field: nameField }) => (
+                        <FormItem>
+                          <FormLabel className="font-['Cormorant_Garamond'] text-[#4a5568]">
+                            {index === 0 ? "Your Name" : `Guest ${index} Name`}
+                          </FormLabel>
+                          <FormControl>
+                            <Input 
+                              {...nameField} 
+                              className="w-full px-4 py-2 border border-[#e8c1c8] rounded-md focus:outline-none focus:ring-2 focus:ring-[#e8c1c8]" 
+                            />
+                          </FormControl>
+                          <FormMessage className="text-red-500 text-sm mt-1" />
+                        </FormItem>
+                      )}
+                    />
+                  ))}
+                </div>
+              )}
               
               {/* Dietary Restrictions Field */}
               <FormField

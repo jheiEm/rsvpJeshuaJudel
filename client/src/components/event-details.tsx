@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
-import { Calendar, MapPin, Info, Utensils } from "lucide-react";
-import { useEffect, useRef } from "react";
+import { Calendar, MapPin, Info, Utensils, Route, Navigation, Car, Clock } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 
 // For TypeScript type safety
 declare global {
@@ -11,10 +11,12 @@ declare global {
 
 const EventDetails = () => {
   const mapRef = useRef<HTMLDivElement>(null);
+  const [showDirections, setShowDirections] = useState(false);
   
   // Initialize map when component mounts
   useEffect(() => {
     let map: any = null;
+    let directionsControl: any = null;
     
     // Function to initialize the map
     const initializeMap = () => {
@@ -23,9 +25,11 @@ const EventDetails = () => {
       // Clear the map container in case it was initialized before
       mapRef.current.innerHTML = '';
       
-      // Coordinates for Lipa City, Philippines
-      const ceremonyCoords = [13.9427, 121.1629]; // St. Therese of the Child Jesus and the Holy Face Parish Church
-      const receptionCoords = [13.9386, 121.1603]; // Mountain Rock Resort
+      // Exact coordinates from the user's input
+      // St Therese Church - X5CW+88P, Santo Tomas-Lipa Rd, Lipa, 4217 Batangas
+      // Mountain Rock Resort - X6G4+J47, Santo Tomas - Lipa Rd, Lipa, Batangas
+      const ceremonyCoords = [13.942673, 121.162903]; // St. Therese Church
+      const receptionCoords = [13.938589, 121.160313]; // Mountain Rock Resort
       
       // Initialize map centered between the two locations
       map = window.L.map(mapRef.current).setView([
@@ -33,39 +37,108 @@ const EventDetails = () => {
         (ceremonyCoords[1] + receptionCoords[1]) / 2
       ], 14);
       
-      // Add tile layer (map style)
+      // Add a prettier map tile layer (Mapbox Streets)
       window.L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
       }).addTo(map);
       
+      // Custom ceremony icon
+      const ceremonyIcon = window.L.divIcon({
+        html: `<div class="flex items-center justify-center w-8 h-8 rounded-full bg-[#6b0f2b] text-white">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" />
+                  <circle cx="12" cy="12" r="3" />
+                </svg>
+              </div>`,
+        className: 'custom-div-icon',
+        iconSize: [30, 30],
+        iconAnchor: [15, 15]
+      });
+      
+      // Custom reception icon
+      const receptionIcon = window.L.divIcon({
+        html: `<div class="flex items-center justify-center w-8 h-8 rounded-full bg-[#6b0f2b] text-white">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M19 9V6a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v3"/>
+                  <path d="M3 16a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-5a2 2 0 0 0-4 0v2H7v-2a2 2 0 0 0-4 0Z"/>
+                  <path d="M5 14v2"/>
+                  <path d="M19 14v2"/>
+                </svg>
+              </div>`,
+        className: 'custom-div-icon',
+        iconSize: [30, 30],
+        iconAnchor: [15, 15]
+      });
+      
       // Add markers for ceremony and reception
-      const ceremonyMarker = window.L.marker(ceremonyCoords).addTo(map)
-        .bindPopup('<b>Ceremony</b><br>St. Therese of the Child Jesus and<br>the Holy Face Parish Church<br>Brgy. Talisay, Lipa City')
+      const ceremonyMarker = window.L.marker(ceremonyCoords, { icon: ceremonyIcon }).addTo(map)
+        .bindPopup(`
+          <div class="text-center">
+            <h3 class="font-bold text-[#6b0f2b] mb-2">Ceremony</h3>
+            <p>St. Therese of the Child Jesus and<br>the Holy Face Parish Church</p>
+            <p class="text-xs text-gray-500 mt-1">X5CW+88P, Santo Tomas-Lipa Rd<br>Lipa, 4217 Batangas</p>
+            <a href="https://maps.google.com/?q=13.942673,121.162903" target="_blank" class="block mt-2 text-blue-500 text-sm">Open in Google Maps</a>
+          </div>
+        `, { maxWidth: 220 })
         .openPopup();
         
-      const receptionMarker = window.L.marker(receptionCoords).addTo(map)
-        .bindPopup('<b>Reception</b><br>Mountain Rock Resort<br>Brgy. Talisay, Lipa City');
+      const receptionMarker = window.L.marker(receptionCoords, { icon: receptionIcon }).addTo(map)
+        .bindPopup(`
+          <div class="text-center">
+            <h3 class="font-bold text-[#6b0f2b] mb-2">Reception</h3>
+            <p>Mountain Rock Resort</p>
+            <p class="text-xs text-gray-500 mt-1">X6G4+J47, Santo Tomas - Lipa Rd<br>Lipa, Batangas</p>
+            <a href="https://maps.google.com/?q=13.938589,121.160313" target="_blank" class="block mt-2 text-blue-500 text-sm">Open in Google Maps</a>
+          </div>
+        `, { maxWidth: 220 });
       
-      // Fit map to show both markers
-      const bounds = window.L.latLngBounds([ceremonyCoords, receptionCoords]);
-      map.fitBounds(bounds, { padding: [50, 50] });
+      // Add a polyline to show the route between the ceremony and reception
+      const routeCoordinates = [
+        ceremonyCoords,
+        [13.941836, 121.161944], // Intersection
+        [13.940459, 121.161032], // Mid-point
+        [13.939107, 121.160168], // Turn
+        receptionCoords
+      ];
+      
+      const routeLine = window.L.polyline(routeCoordinates, {
+        color: '#6b0f2b',
+        weight: 4,
+        opacity: 0.7,
+        dashArray: '10, 10',
+        lineJoin: 'round'
+      }).addTo(map);
+      
+      // Fit map to show the entire route
+      const bounds = window.L.latLngBounds(routeCoordinates);
+      map.fitBounds(bounds, { padding: [30, 30] });
+      
+      // Save the map instance to state for later reference
+      return map;
     };
     
-    // Load Leaflet if not already loaded
-    if (!window.L) {
-      // Load Leaflet CSS and JS dynamically
+    // Load Leaflet
+    const loadScripts = () => {
+      // Load Leaflet CSS
       const linkEl = document.createElement('link');
       linkEl.rel = 'stylesheet';
       linkEl.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
       document.head.appendChild(linkEl);
       
+      // Load Leaflet JS
       const scriptEl = document.createElement('script');
       scriptEl.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
-      scriptEl.onload = initializeMap;
+      scriptEl.onload = () => {
+        map = initializeMap();
+      };
       document.head.appendChild(scriptEl);
+    };
+    
+    // Initialize or load scripts
+    if (!window.L) {
+      loadScripts();
     } else {
-      // Leaflet already loaded, initialize map
-      initializeMap();
+      map = initializeMap();
     }
     
     // Cleanup function
@@ -171,14 +244,110 @@ const EventDetails = () => {
           transition={{ duration: 0.6, delay: 0.3 }}
           viewport={{ once: true }}
         >
-          <h3 className="font-['Cormorant_Garamond'] text-2xl text-[#4a5568] text-center mb-6">Locations</h3>
-          <div className="aspect-video h-80 rounded-lg overflow-hidden shadow-lg">
+          <h3 className="font-['Cormorant_Garamond'] text-2xl text-[#6b0f2b] text-center mb-2">Wedding Locations</h3>
+          <p className="text-center text-[#4a5568] mb-6 max-w-2xl mx-auto">
+            Our ceremony and reception venues are located only a short 5-minute drive from each other.
+            Use the interactive map below to see directions from the church to the reception.
+          </p>
+          
+          <div className="aspect-video h-80 rounded-lg overflow-hidden shadow-lg mb-8">
             <div ref={mapRef} className="w-full h-full bg-[#a0aec0]">
               <div className="w-full h-full flex items-center justify-center">
                 <p className="text-[#4a5568]">Interactive map loading...</p>
               </div>
             </div>
           </div>
+          
+          {/* Direction Toggle Button */}
+          <div className="flex justify-center mb-8">
+            <button
+              onClick={() => setShowDirections(!showDirections)}
+              className="flex items-center gap-2 bg-[#6b0f2b] hover:bg-[#890f32] text-white py-2 px-4 rounded-full transition-all duration-300"
+            >
+              {showDirections ? (
+                <>
+                  <Car className="h-5 w-5" />
+                  <span>Hide Directions</span>
+                </>
+              ) : (
+                <>
+                  <Route className="h-5 w-5" />
+                  <span>Show Directions</span>
+                </>
+              )}
+            </button>
+          </div>
+          
+          {/* Directions */}
+          {showDirections && (
+            <motion.div
+              className="bg-[#fff5f7] rounded-lg p-6 border border-[#e8c1c8] shadow-sm mb-8"
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              <h4 className="font-['Cormorant_Garamond'] text-xl text-center text-[#6b0f2b] mb-4">
+                Directions from Church to Reception
+              </h4>
+              
+              <div className="flex items-start gap-4 mb-3">
+                <div className="flex-shrink-0 w-10 h-10 rounded-full bg-[#6b0f2b] text-white flex items-center justify-center">
+                  <Clock className="h-5 w-5" />
+                </div>
+                <div>
+                  <p className="text-[#4a5568] font-medium">Estimated Travel Time: 5 minutes (0.6 km)</p>
+                </div>
+              </div>
+              
+              <div className="pl-12 relative">
+                {/* Vertical line connecting direction steps */}
+                <div className="absolute left-3 top-2 bottom-0 w-0.5 bg-[#e8c1c8]"></div>
+                
+                <ul className="space-y-6">
+                  <li className="relative">
+                    <div className="absolute left-[-24px] top-0 w-6 h-6 rounded-full bg-white border-2 border-[#6b0f2b] flex items-center justify-center">
+                      <span className="text-[#6b0f2b] font-bold text-xs">1</span>
+                    </div>
+                    <p className="text-[#4a5568]">Exit <strong>St. Therese of the Child Jesus and the Holy Face Parish Church</strong> and turn right onto Santo Tomas-Lipa Road heading southwest.</p>
+                  </li>
+                  
+                  <li className="relative">
+                    <div className="absolute left-[-24px] top-0 w-6 h-6 rounded-full bg-white border-2 border-[#6b0f2b] flex items-center justify-center">
+                      <span className="text-[#6b0f2b] font-bold text-xs">2</span>
+                    </div>
+                    <p className="text-[#4a5568]">Continue straight for approximately 400 meters on Santo Tomas-Lipa Road.</p>
+                  </li>
+                  
+                  <li className="relative">
+                    <div className="absolute left-[-24px] top-0 w-6 h-6 rounded-full bg-white border-2 border-[#6b0f2b] flex items-center justify-center">
+                      <span className="text-[#6b0f2b] font-bold text-xs">3</span>
+                    </div>
+                    <p className="text-[#4a5568]">Look for the <strong>Mountain Rock Resort</strong> signage on your right. Turn right into the resort entrance.</p>
+                  </li>
+                  
+                  <li className="relative">
+                    <div className="absolute left-[-24px] top-0 w-6 h-6 rounded-full bg-white border-2 border-[#6b0f2b] flex items-center justify-center">
+                      <span className="text-[#6b0f2b] font-bold text-xs">4</span>
+                    </div>
+                    <p className="text-[#4a5568]">Follow the driveway to the reception area where ushers will guide you to the parking area.</p>
+                  </li>
+                </ul>
+              </div>
+              
+              <div className="mt-8 flex justify-center">
+                <a 
+                  href="https://www.google.com/maps/dir/St.+Therese+of+The+Child+Jesus+Parish+Church,+X5CW%2B88P,+Santo+Tomas-Lipa+Rd,+Lipa,+4217+Batangas/Mountain+Rock+Resort,+X6G4%2BJ47,+Santo+Tomas+-+Lipa+Rd,+Lipa,+Batangas/@13.940631,121.1602271,17z/data=!3m1!4b1!4m14!4m13!1m5!1m1!1s0x33bd6dd5c1d49063:0xb8c21a48887b1a56!2m2!1d121.162903!2d13.942673!1m5!1m1!1s0x33bd6dd0be86fe9b:0x13e12b3e75d5f119!2m2!1d121.160313!2d13.938589!3e0"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="bg-[#6b0f2b] hover:bg-[#890f32] text-white py-2 px-4 rounded-md flex items-center gap-2 transition-all duration-300"
+                >
+                  <Navigation className="h-4 w-4" />
+                  <span>Get Directions on Google Maps</span>
+                </a>
+              </div>
+            </motion.div>
+          )}
         </motion.div>
       </div>
     </section>
