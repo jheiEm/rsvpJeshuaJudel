@@ -59,6 +59,9 @@ const Navigation = () => {
           <a href="#rsvp" className="font-['Cormorant_Garamond'] text-[#4a5568] hover:text-[#6b0f2b] transition-colors">
             RSVP
           </a>
+          <a href="#messages" className="font-['Cormorant_Garamond'] text-[#4a5568] hover:text-[#6b0f2b] transition-colors">
+            Messages
+          </a>
         </div>
         
         <button 
@@ -125,6 +128,13 @@ const Navigation = () => {
                 onClick={handleNavLinkClick}
               >
                 RSVP
+              </a>
+              <a 
+                href="#messages" 
+                className="font-['Cormorant_Garamond'] text-[#4a5568] hover:text-[#6b0f2b] transition-colors"
+                onClick={handleNavLinkClick}
+              >
+                Messages
               </a>
             </div>
           </motion.div>

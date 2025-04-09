@@ -10,6 +10,7 @@ import RsvpForm from "@/components/rsvp-form";
 import Contact from "@/components/contact";
 import Footer from "@/components/footer";
 import Entourage from "@/components/entourage";
+import GuestMessageBoard from "@/components/guest-message-board";
 
 const Home = () => {
   // Smooth scrolling for anchor links
@@ -48,6 +49,7 @@ const Home = () => {
       <Entourage />
       <Gallery />
       <RsvpForm />
+      <GuestMessageBoard />
       <Contact />
       <Footer />
     </div>
