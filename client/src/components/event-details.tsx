@@ -25,11 +25,11 @@ const EventDetails = () => {
       // Clear the map container in case it was initialized before
       mapRef.current.innerHTML = '';
       
-      // Exact coordinates from the user's input
+      // Exact coordinates for the correct addresses
       // St Therese Church - X5CW+88P, Santo Tomas-Lipa Rd, Lipa, 4217 Batangas
       // Mountain Rock Resort - X6G4+J47, Santo Tomas - Lipa Rd, Lipa, Batangas
-      const ceremonyCoords = [13.942673, 121.162903]; // St. Therese Church
-      const receptionCoords = [13.938589, 121.160313]; // Mountain Rock Resort
+      const ceremonyCoords = [13.9427, 121.1630]; // St. Therese Church
+      const receptionCoords = [13.9380, 121.1600]; // Mountain Rock Resort
       
       // Initialize map centered between the two locations
       map = window.L.map(mapRef.current).setView([
@@ -77,7 +77,7 @@ const EventDetails = () => {
             <h3 class="font-bold text-[#6b0f2b] mb-2">Ceremony</h3>
             <p>St. Therese of the Child Jesus and<br>the Holy Face Parish Church</p>
             <p class="text-xs text-gray-500 mt-1">X5CW+88P, Santo Tomas-Lipa Rd<br>Lipa, 4217 Batangas</p>
-            <a href="https://maps.google.com/?q=13.942673,121.162903" target="_blank" class="block mt-2 text-blue-500 text-sm">Open in Google Maps</a>
+            <a href="https://maps.google.com/?q=13.9427,121.1630" target="_blank" class="block mt-2 text-blue-500 text-sm">Open in Google Maps</a>
           </div>
         `, { maxWidth: 220 })
         .openPopup();
@@ -88,7 +88,7 @@ const EventDetails = () => {
             <h3 class="font-bold text-[#6b0f2b] mb-2">Reception</h3>
             <p>Mountain Rock Resort</p>
             <p class="text-xs text-gray-500 mt-1">X6G4+J47, Santo Tomas - Lipa Rd<br>Lipa, Batangas</p>
-            <a href="https://maps.google.com/?q=13.938589,121.160313" target="_blank" class="block mt-2 text-blue-500 text-sm">Open in Google Maps</a>
+            <a href="https://maps.google.com/?q=13.9380,121.1600" target="_blank" class="block mt-2 text-blue-500 text-sm">Open in Google Maps</a>
           </div>
         `, { maxWidth: 220 });
       
@@ -337,7 +337,7 @@ const EventDetails = () => {
               
               <div className="mt-8 flex justify-center">
                 <a 
-                  href="https://www.google.com/maps/dir/St.+Therese+of+The+Child+Jesus+Parish+Church,+X5CW%2B88P,+Santo+Tomas-Lipa+Rd,+Lipa,+4217+Batangas/Mountain+Rock+Resort,+X6G4%2BJ47,+Santo+Tomas+-+Lipa+Rd,+Lipa,+Batangas/@13.940631,121.1602271,17z/data=!3m1!4b1!4m14!4m13!1m5!1m1!1s0x33bd6dd5c1d49063:0xb8c21a48887b1a56!2m2!1d121.162903!2d13.942673!1m5!1m1!1s0x33bd6dd0be86fe9b:0x13e12b3e75d5f119!2m2!1d121.160313!2d13.938589!3e0"
+                  href="https://www.google.com/maps/dir/13.9427,121.1630/13.9380,121.1600"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="bg-[#6b0f2b] hover:bg-[#890f32] text-white py-2 px-4 rounded-md flex items-center gap-2 transition-all duration-300"
