@@ -2,7 +2,6 @@ import { useEffect } from "react";
 import Navigation from "@/components/navigation";
 import HeroSection from "@/components/hero-section";
 import CountdownTimer from "@/components/countdown-timer";
-import OurStory from "@/components/our-story";
 import EventDetails from "@/components/event-details";
 import Schedule from "@/components/schedule";
 import Gallery from "@/components/gallery";
@@ -11,6 +10,8 @@ import Contact from "@/components/contact";
 import Footer from "@/components/footer";
 import Entourage from "@/components/entourage";
 import GuestMessageBoard from "@/components/guest-message-board";
+import MusicPlayer from "@/components/music-player";
+import AnimatedLoveStory from "@/components/animated-love-story";
 
 const Home = () => {
   // Smooth scrolling for anchor links
@@ -43,7 +44,7 @@ const Home = () => {
       <Navigation />
       <HeroSection />
       <CountdownTimer />
-      <OurStory />
+      <AnimatedLoveStory />
       <EventDetails />
       <Schedule />
       <Entourage />
@@ -52,6 +53,7 @@ const Home = () => {
       <GuestMessageBoard />
       <Contact />
       <Footer />
+      <MusicPlayer />
     </div>
   );
 };
