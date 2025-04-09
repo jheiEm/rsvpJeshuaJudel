@@ -36,30 +36,33 @@ const Navigation = () => {
       }`}
     >
       <div className="container mx-auto px-4 flex justify-between items-center">
-        <a href="#home" className="font-['Great_Vibes'] text-3xl text-[#d4af7a]">
-          Jessica & Michael
+        <a href="#home" className="font-['Great_Vibes'] text-3xl text-[#6b0f2b]">
+          Jeshua & Judel
         </a>
         
-        <div className="hidden md:flex space-x-8">
-          <a href="#home" className="font-['Cormorant_Garamond'] text-[#4a5568] hover:text-[#d4af7a] transition-colors">
+        <div className="hidden md:flex space-x-6">
+          <a href="#home" className="font-['Cormorant_Garamond'] text-[#4a5568] hover:text-[#6b0f2b] transition-colors">
             Home
           </a>
-          <a href="#story" className="font-['Cormorant_Garamond'] text-[#4a5568] hover:text-[#d4af7a] transition-colors">
+          <a href="#story" className="font-['Cormorant_Garamond'] text-[#4a5568] hover:text-[#6b0f2b] transition-colors">
             Our Story
           </a>
-          <a href="#details" className="font-['Cormorant_Garamond'] text-[#4a5568] hover:text-[#d4af7a] transition-colors">
+          <a href="#details" className="font-['Cormorant_Garamond'] text-[#4a5568] hover:text-[#6b0f2b] transition-colors">
             Details
           </a>
-          <a href="#gallery" className="font-['Cormorant_Garamond'] text-[#4a5568] hover:text-[#d4af7a] transition-colors">
+          <a href="#entourage" className="font-['Cormorant_Garamond'] text-[#4a5568] hover:text-[#6b0f2b] transition-colors">
+            Wedding Party
+          </a>
+          <a href="#gallery" className="font-['Cormorant_Garamond'] text-[#4a5568] hover:text-[#6b0f2b] transition-colors">
             Gallery
           </a>
-          <a href="#rsvp" className="font-['Cormorant_Garamond'] text-[#4a5568] hover:text-[#d4af7a] transition-colors">
+          <a href="#rsvp" className="font-['Cormorant_Garamond'] text-[#4a5568] hover:text-[#6b0f2b] transition-colors">
             RSVP
           </a>
         </div>
         
         <button 
-          className="md:hidden text-[#d4af7a]"
+          className="md:hidden text-[#6b0f2b]"
           onClick={toggleMobileMenu}
           aria-label="Toggle mobile menu"
         >
@@ -83,35 +86,42 @@ const Navigation = () => {
             <div className="container mx-auto px-4 flex flex-col space-y-4">
               <a 
                 href="#home" 
-                className="font-['Cormorant_Garamond'] text-[#4a5568] hover:text-[#d4af7a] transition-colors"
+                className="font-['Cormorant_Garamond'] text-[#4a5568] hover:text-[#6b0f2b] transition-colors"
                 onClick={handleNavLinkClick}
               >
                 Home
               </a>
               <a 
                 href="#story" 
-                className="font-['Cormorant_Garamond'] text-[#4a5568] hover:text-[#d4af7a] transition-colors"
+                className="font-['Cormorant_Garamond'] text-[#4a5568] hover:text-[#6b0f2b] transition-colors"
                 onClick={handleNavLinkClick}
               >
                 Our Story
               </a>
               <a 
                 href="#details" 
-                className="font-['Cormorant_Garamond'] text-[#4a5568] hover:text-[#d4af7a] transition-colors"
+                className="font-['Cormorant_Garamond'] text-[#4a5568] hover:text-[#6b0f2b] transition-colors"
                 onClick={handleNavLinkClick}
               >
                 Details
               </a>
               <a 
+                href="#entourage" 
+                className="font-['Cormorant_Garamond'] text-[#4a5568] hover:text-[#6b0f2b] transition-colors"
+                onClick={handleNavLinkClick}
+              >
+                Wedding Party
+              </a>
+              <a 
                 href="#gallery" 
-                className="font-['Cormorant_Garamond'] text-[#4a5568] hover:text-[#d4af7a] transition-colors"
+                className="font-['Cormorant_Garamond'] text-[#4a5568] hover:text-[#6b0f2b] transition-colors"
                 onClick={handleNavLinkClick}
               >
                 Gallery
               </a>
               <a 
                 href="#rsvp" 
-                className="font-['Cormorant_Garamond'] text-[#4a5568] hover:text-[#d4af7a] transition-colors"
+                className="font-['Cormorant_Garamond'] text-[#4a5568] hover:text-[#6b0f2b] transition-colors"
                 onClick={handleNavLinkClick}
               >
                 RSVP

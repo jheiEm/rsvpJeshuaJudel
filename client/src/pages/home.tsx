@@ -9,6 +9,7 @@ import Gallery from "@/components/gallery";
 import RsvpForm from "@/components/rsvp-form";
 import Contact from "@/components/contact";
 import Footer from "@/components/footer";
+import Entourage from "@/components/entourage";
 
 const Home = () => {
   // Smooth scrolling for anchor links
@@ -44,6 +45,7 @@ const Home = () => {
       <OurStory />
       <EventDetails />
       <Schedule />
+      <Entourage />
       <Gallery />
       <RsvpForm />
       <Contact />

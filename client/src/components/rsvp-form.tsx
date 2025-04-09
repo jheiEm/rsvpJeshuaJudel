@@ -26,7 +26,7 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { Loader2 } from "lucide-react";
+import { Loader2, Phone, Instagram, Twitter, Facebook } from "lucide-react";
 
 type FormValues = z.infer<typeof rsvpFormSchema>;
 
@@ -75,11 +75,20 @@ const RsvpForm = () => {
     mutate(data);
   };
   
+  // Dress code color palette
+  const dressCodeColors = [
+    "#2a0808", // Dark burgundy
+    "#a32035", // Deep red
+    "#c9a7a0", // Dusty rose
+    "#e6c8b1", // Peach
+    "#f7e5e4"  // Light blush
+  ];
+  
   return (
-    <section id="rsvp" className="py-20 bg-[#faf7f2]">
+    <section id="rsvp" className="py-20 bg-[#fff5f7]">
       <div className="container mx-auto px-4">
         <motion.h2 
-          className="font-['Great_Vibes'] text-4xl md:text-5xl text-[#d4af7a] text-center mb-6"
+          className="font-['Great_Vibes'] text-4xl md:text-5xl text-[#6b0f2b] text-center mb-6"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
@@ -89,17 +98,48 @@ const RsvpForm = () => {
         </motion.h2>
         
         <motion.p 
-          className="text-center text-[#718096] max-w-xl mx-auto mb-12"
+          className="text-center text-[#718096] max-w-xl mx-auto mb-8"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           transition={{ duration: 0.6, delay: 0.2 }}
           viewport={{ once: true }}
         >
-          We look forward to celebrating our special day with you. Please let us know if you can make it by October 15, 2023.
+          We have reserved ____ seat(s) for you. We hope that you can make it to our wedding. 
+          Please let us know by April 20, 2025.
         </motion.p>
         
+        {/* Dress Code Section */}
+        <motion.div
+          className="max-w-xl mx-auto mb-10"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          viewport={{ once: true }}
+        >
+          <h3 className="font-['Great_Vibes'] text-3xl text-[#6b0f2b] text-center mb-4">Dress Code</h3>
+          <p className="text-center text-[#718096] mb-4">
+            We request if possible that all guests would wear semi formal or casual attire
+            with touch of any of the following colors:
+          </p>
+          <div className="flex justify-center gap-4 mb-6">
+            {dressCodeColors.map((color, index) => (
+              <div 
+                key={index} 
+                className="w-12 h-12 rounded-full shadow-sm border border-gray-200" 
+                style={{ backgroundColor: color }}
+              ></div>
+            ))}
+          </div>
+          
+          <h3 className="font-['Great_Vibes'] text-3xl text-[#6b0f2b] text-center mb-4 mt-10">Wedding Gift Guide</h3>
+          <p className="text-center text-[#718096] italic px-4">
+            "With all that we have, we have been truly blessed. Your presence and prayers all that we request. 
+            But if you desire to give nonetheless, a monetary gift is one we suggest."
+          </p>
+        </motion.div>
+        
         <motion.div 
-          className="max-w-xl mx-auto bg-white p-8 rounded-lg shadow-md border border-[#e6d5b8]"
+          className="max-w-xl mx-auto bg-white p-8 rounded-lg shadow-md border border-[#e8c1c8] mb-10"
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.3 }}
@@ -117,7 +157,7 @@ const RsvpForm = () => {
                     <FormControl>
                       <Input 
                         {...field} 
-                        className="w-full px-4 py-2 border border-[#e6d5b8] rounded-md focus:outline-none focus:ring-2 focus:ring-[#e6d5b8]" 
+                        className="w-full px-4 py-2 border border-[#e8c1c8] rounded-md focus:outline-none focus:ring-2 focus:ring-[#e8c1c8]" 
                       />
                     </FormControl>
                     <FormMessage className="text-red-500 text-sm mt-1" />
@@ -136,7 +176,7 @@ const RsvpForm = () => {
                       <Input 
                         {...field} 
                         type="email" 
-                        className="w-full px-4 py-2 border border-[#e6d5b8] rounded-md focus:outline-none focus:ring-2 focus:ring-[#e6d5b8]" 
+                        className="w-full px-4 py-2 border border-[#e8c1c8] rounded-md focus:outline-none focus:ring-2 focus:ring-[#e8c1c8]" 
                       />
                     </FormControl>
                     <FormMessage className="text-red-500 text-sm mt-1" />
@@ -184,7 +224,7 @@ const RsvpForm = () => {
                       defaultValue={field.value.toString()}
                     >
                       <FormControl>
-                        <SelectTrigger className="w-full border border-[#e6d5b8] rounded-md focus:outline-none focus:ring-2 focus:ring-[#e6d5b8]">
+                        <SelectTrigger className="w-full border border-[#e8c1c8] rounded-md focus:outline-none focus:ring-2 focus:ring-[#e8c1c8]">
                           <SelectValue placeholder="Select number of guests" />
                         </SelectTrigger>
                       </FormControl>
@@ -206,12 +246,12 @@ const RsvpForm = () => {
                 name="message"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="font-['Cormorant_Garamond'] text-[#4a5568]">Special Requests or Dietary Restrictions</FormLabel>
+                    <FormLabel className="font-['Cormorant_Garamond'] text-[#4a5568]">Additional Notes</FormLabel>
                     <FormControl>
                       <Textarea 
                         {...field} 
                         rows={4}
-                        className="w-full px-4 py-2 border border-[#e6d5b8] rounded-md focus:outline-none focus:ring-2 focus:ring-[#e6d5b8]" 
+                        className="w-full px-4 py-2 border border-[#e8c1c8] rounded-md focus:outline-none focus:ring-2 focus:ring-[#e8c1c8]" 
                       />
                     </FormControl>
                     <FormMessage className="text-red-500 text-sm mt-1" />
@@ -228,7 +268,7 @@ const RsvpForm = () => {
                   <Button 
                     type="submit" 
                     disabled={isPending}
-                    className="bg-[#d4af7a] text-white font-['Cormorant_Garamond'] px-8 py-3 rounded-md hover:bg-[#c9a66b] transition-colors transform hover:-translate-y-2 hover:shadow-lg duration-300"
+                    className="bg-[#6b0f2b] text-white font-['Cormorant_Garamond'] px-8 py-3 rounded-md hover:bg-[#890f32] transition-colors transform hover:-translate-y-2 hover:shadow-lg duration-300"
                   >
                     {isPending ? (
                       <>
@@ -241,6 +281,44 @@ const RsvpForm = () => {
               </div>
             </form>
           </Form>
+        </motion.div>
+        
+        {/* Contact Phone */}
+        <motion.div 
+          className="text-center mb-8"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          transition={{ duration: 0.6, delay: 0.4 }}
+          viewport={{ once: true }}
+        >
+          <div className="flex items-center justify-center mb-2">
+            <Phone className="h-5 w-5 text-[#6b0f2b] mr-2" />
+            <span className="text-[#4a5568]">+63 921 397 3751</span>
+          </div>
+        </motion.div>
+        
+        {/* Social Media */}
+        <motion.div 
+          className="text-center"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          transition={{ duration: 0.6, delay: 0.5 }}
+          viewport={{ once: true }}
+        >
+          <h3 className="font-['Great_Vibes'] text-2xl text-[#6b0f2b] mb-4">Snap & Share</h3>
+          <p className="text-[#718096] mb-4">If you happen to snap a pic, don't forget to do a tag of it</p>
+          <p className="text-[#6b0f2b] font-bold tracking-wider mb-4">#JESHUANNABEWITHUDLFOREEVER</p>
+          <div className="flex justify-center gap-4">
+            <a href="#" className="text-[#6b0f2b] hover:text-[#890f32]">
+              <Instagram className="h-6 w-6" />
+            </a>
+            <a href="#" className="text-[#6b0f2b] hover:text-[#890f32]">
+              <Twitter className="h-6 w-6" />
+            </a>
+            <a href="#" className="text-[#6b0f2b] hover:text-[#890f32]">
+              <Facebook className="h-6 w-6" />
+            </a>
+          </div>
         </motion.div>
       </div>
     </section>
