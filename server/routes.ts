@@ -1,7 +1,7 @@
 import type { Express, Request, Response, NextFunction } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertRsvpSchema, rsvpFormSchema, guestMessageFormSchema } from "@shared/schema";
+import { insertRsvpSchema, rsvpFormSchema, guestMessageFormSchema, musicTrackFormSchema } from "@shared/schema";
 import multer from "multer";
 import path from "path";
 
@@ -17,7 +17,9 @@ interface UploadedFile {
 
 // Multer setup for file uploads
 const memStorage = multer.memoryStorage();
-const upload = multer({
+
+// Image upload configuration
+const imageUpload = multer({
   storage: memStorage,
   limits: {
     fileSize: 5 * 1024 * 1024, // 5MB max file size
@@ -32,6 +34,25 @@ const upload = multer({
       return cb(null, true);
     }
     cb(new Error("Only image files are allowed!"));
+  }
+});
+
+// Music upload configuration
+const musicUpload = multer({
+  storage: memStorage,
+  limits: {
+    fileSize: 10 * 1024 * 1024, // 10MB max file size for music
+  },
+  fileFilter: (_, file, cb) => {
+    // Check if the file is an audio file
+    const filetypes = /mp3|wav|ogg|m4a/;
+    const mimetype = file.mimetype.includes('audio');
+    const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
+    
+    if (mimetype && extname) {
+      return cb(null, true);
+    }
+    cb(new Error("Only audio files (MP3, WAV, OGG, M4A) are allowed!"));
   }
 });
 
@@ -115,7 +136,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
   
   // Post a new guest message (with optional photo)
-  app.post("/api/guest-messages", upload.single('photo'), async (req, res) => {
+  app.post("/api/guest-messages", imageUpload.single('photo'), async (req, res) => {
     try {
       let photoUrl = undefined;
       
@@ -215,6 +236,156 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({
         message: "Failed to retrieve guest messages"
       });
+    }
+  });
+  
+  // Guest message approval
+  app.put("/api/admin/guest-messages/:id/approve", isAuthenticated, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const { approved } = req.body;
+      
+      const updatedMessage = await storage.updateGuestMessageApproval(id, approved);
+      
+      if (!updatedMessage) {
+        return res.status(404).json({ message: "Message not found" });
+      }
+      
+      res.json({
+        message: `Message ${approved ? 'approved' : 'unapproved'} successfully`,
+        data: updatedMessage
+      });
+    } catch (error) {
+      console.error("Error updating message approval:", error);
+      res.status(500).json({ message: "Failed to update message approval" });
+    }
+  });
+  
+  // Delete guest message
+  app.delete("/api/admin/guest-messages/:id", isAuthenticated, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const success = await storage.deleteGuestMessage(id);
+      
+      if (!success) {
+        return res.status(404).json({ message: "Message not found or could not be deleted" });
+      }
+      
+      res.json({ message: "Message deleted successfully" });
+    } catch (error) {
+      console.error("Error deleting message:", error);
+      res.status(500).json({ message: "Failed to delete message" });
+    }
+  });
+  
+  // Music Endpoints
+  
+  // Get the currently active music track (public)
+  app.get("/api/music/active", async (req, res) => {
+    try {
+      const track = await storage.getActiveMusicTrack();
+      if (!track) {
+        return res.status(404).json({ message: "No active music track found" });
+      }
+      res.json(track);
+    } catch (error) {
+      console.error("Error fetching active music track:", error);
+      res.status(500).json({ message: "Failed to fetch active music track" });
+    }
+  });
+  
+  // Admin music endpoints
+  
+  // Get all music tracks
+  app.get("/api/admin/music", isAuthenticated, async (req, res) => {
+    try {
+      const tracks = await storage.getMusicTracks();
+      res.json(tracks);
+    } catch (error) {
+      console.error("Error fetching music tracks:", error);
+      res.status(500).json({ message: "Failed to fetch music tracks" });
+    }
+  });
+  
+  // Upload a new music track
+  app.post("/api/admin/music", isAuthenticated, musicUpload.single('musicFile'), async (req, res) => {
+    try {
+      let filePath = undefined;
+      
+      // A music file must be uploaded
+      if (!req.file) {
+        return res.status(400).json({ message: "No music file provided" });
+      }
+      
+      // Save the music file
+      filePath = await storage.saveMusicAndGetUrl(req.file);
+      
+      // Combine form data with the file path
+      const trackData = {
+        title: req.body.title,
+        artist: req.body.artist || null,
+        filePath,
+        isActive: req.body.isActive === 'true'
+      };
+      
+      // Validate the data
+      const validatedData = musicTrackFormSchema.parse(trackData);
+      
+      // Save the track
+      const track = await storage.createMusicTrack(validatedData);
+      
+      res.status(201).json({
+        message: "Music track uploaded successfully",
+        data: track
+      });
+    } catch (error: unknown) {
+      if (error instanceof Error && error.name === "ZodError") {
+        return res.status(400).json({
+          message: "Validation failed",
+          errors: (error as any).errors,
+        });
+      }
+      
+      if (error instanceof Error && error.name === "MulterError") {
+        return res.status(400).json({ message: error.message });
+      }
+      
+      console.error("Error uploading music track:", error);
+      res.status(500).json({ message: "Failed to upload music track" });
+    }
+  });
+  
+  // Set active music track
+  app.put("/api/admin/music/:id/active", isAuthenticated, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const success = await storage.setActiveMusicTrack(id);
+      
+      if (!success) {
+        return res.status(404).json({ message: "Track not found or could not be set as active" });
+      }
+      
+      res.json({ message: "Track set as active successfully" });
+    } catch (error) {
+      console.error("Error setting active track:", error);
+      res.status(500).json({ message: "Failed to set active track" });
+    }
+  });
+  
+  // Delete music track
+  app.delete("/api/admin/music/:id", isAuthenticated, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const success = await storage.deleteMusicTrack(id);
+      
+      if (!success) {
+        return res.status(404).json({ message: "Track not found or could not be deleted" });
+      }
+      
+      res.json({ message: "Track deleted successfully" });
+    } catch (error) {
+      console.error("Error deleting track:", error);
+      res.status(500).json({ message: "Failed to delete track" });
     }
   });
 

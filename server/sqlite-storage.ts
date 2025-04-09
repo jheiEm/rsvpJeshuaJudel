@@ -1,7 +1,8 @@
 import { 
   users, type User, type InsertUser, 
   rsvps, type Rsvp, type InsertRsvp,
-  guestMessages, type GuestMessage, type InsertGuestMessage
+  guestMessages, type GuestMessage, type InsertGuestMessage,
+  musicTracks, type MusicTrack, type InsertMusicTrack
 } from "@shared/schema";
 import * as fs from 'fs';
 import * as path from 'path';
@@ -42,6 +43,15 @@ sqlite.exec(`
     photo_url TEXT,
     approved INTEGER DEFAULT 1,
     created_at TEXT NOT NULL
+  );
+  
+  CREATE TABLE IF NOT EXISTS music_tracks (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    title TEXT NOT NULL,
+    artist TEXT,
+    file_path TEXT NOT NULL,
+    is_active INTEGER DEFAULT 0,
+    uploaded_at TEXT NOT NULL
   );
 `);
 
@@ -117,10 +127,11 @@ export class SqliteStorage implements IStorage {
     };
     
     // Use SQL directly to avoid the type error
-    const sql = `INSERT INTO guest_messages (name, message, photoUrl, approved, createdAt) 
+    const sql = `INSERT INTO guest_messages (name, message, photo_url, approved, created_at) 
                 VALUES (?, ?, ?, ?, ?)`;
     
-    const result = db.prepare(sql).run(
+    const stmt = sqlite.prepare(sql);
+    const result = stmt.run(
       insertData.name,
       insertData.message,
       insertData.photoUrl,
@@ -168,6 +179,168 @@ export class SqliteStorage implements IStorage {
     await fs.promises.writeFile(filePath, file.buffer);
     
     // Return the URL (relative to public directory)
+    return relativePath;
+  }
+  
+  // New message management methods
+  async getGuestMessageById(id: number): Promise<GuestMessage | undefined> {
+    const message = db.select().from(guestMessages).where(eq(guestMessages.id, id)).get();
+    if (!message) return undefined;
+    
+    return {
+      ...message,
+      createdAt: new Date(message.createdAt)
+    };
+  }
+  
+  async updateGuestMessageApproval(id: number, approved: boolean): Promise<GuestMessage | undefined> {
+    // Execute raw SQL to update message approval
+    sqlite.exec(`UPDATE guest_messages SET approved = ${approved ? 1 : 0} WHERE id = ${id}`);
+    
+    // Return the updated message
+    return this.getGuestMessageById(id);
+  }
+  
+  async deleteGuestMessage(id: number): Promise<boolean> {
+    try {
+      sqlite.exec(`DELETE FROM guest_messages WHERE id = ${id}`);
+      return true;
+    } catch (error) {
+      console.error('Error deleting message:', error);
+      return false;
+    }
+  }
+  
+  // Music track methods
+  async createMusicTrack(track: InsertMusicTrack): Promise<MusicTrack> {
+    const uploadedAt = new Date();
+    
+    // If this track is set to active, deactivate all other tracks first
+    if (track.isActive) {
+      sqlite.exec('UPDATE music_tracks SET is_active = 0');
+    }
+    
+    // Create track data
+    const insertData = {
+      title: track.title,
+      artist: track.artist || null,
+      filePath: track.filePath,
+      isActive: track.isActive || false,
+      uploadedAt: uploadedAt.toISOString()
+    };
+    
+    // Use raw SQL to avoid type issues
+    const sql = `INSERT INTO music_tracks (title, artist, file_path, is_active, uploaded_at) 
+                VALUES (?, ?, ?, ?, ?)`;
+                
+    const stmt = sqlite.prepare(sql);
+    const result = stmt.run(
+      insertData.title,
+      insertData.artist,
+      insertData.filePath,
+      insertData.isActive ? 1 : 0,
+      insertData.uploadedAt
+    );
+    
+    return {
+      id: result.lastInsertRowid as number,
+      ...insertData,
+      uploadedAt
+    };
+  }
+  
+  async getMusicTracks(): Promise<MusicTrack[]> {
+    // Get all music tracks with raw SQL
+    const tracks = sqlite.prepare('SELECT * FROM music_tracks ORDER BY uploaded_at DESC').all();
+    
+    // Convert to proper types
+    return tracks.map((track: any) => ({
+      id: track.id,
+      title: track.title,
+      artist: track.artist,
+      filePath: track.file_path,
+      isActive: Boolean(track.is_active),
+      uploadedAt: new Date(track.uploaded_at)
+    }));
+  }
+  
+  async getActiveMusicTrack(): Promise<MusicTrack | undefined> {
+    // Get the active track
+    const stmt = sqlite.prepare('SELECT * FROM music_tracks WHERE is_active = 1 LIMIT 1');
+    const track = stmt.get() as any;
+    
+    if (!track) return undefined;
+    
+    return {
+      id: track.id,
+      title: track.title,
+      artist: track.artist,
+      filePath: track.file_path,
+      isActive: true,
+      uploadedAt: new Date(track.uploaded_at)
+    };
+  }
+  
+  async setActiveMusicTrack(id: number): Promise<boolean> {
+    try {
+      // First, set all tracks to inactive
+      sqlite.exec('UPDATE music_tracks SET is_active = 0');
+      
+      // Then set the selected track to active
+      sqlite.exec(`UPDATE music_tracks SET is_active = 1 WHERE id = ${id}`);
+      
+      return true;
+    } catch (error) {
+      console.error('Error setting active track:', error);
+      return false;
+    }
+  }
+  
+  async deleteMusicTrack(id: number): Promise<boolean> {
+    try {
+      // Get the track to check if we need to delete the file
+      const stmt = sqlite.prepare('SELECT * FROM music_tracks WHERE id = ?');
+      const track = stmt.get(id) as any;
+      
+      if (track) {
+        // Delete the file from the file system
+        const filePath = path.join(process.cwd(), 'client/public', track.file_path);
+        if (fs.existsSync(filePath)) {
+          fs.unlinkSync(filePath);
+        }
+      }
+      
+      // Delete from the database
+      sqlite.exec(`DELETE FROM music_tracks WHERE id = ${id}`);
+      
+      return true;
+    } catch (error) {
+      console.error('Error deleting track:', error);
+      return false;
+    }
+  }
+  
+  async saveMusicAndGetUrl(file: UploadedFile): Promise<string> {
+    // Create music directory if it doesn't exist
+    const musicDir = path.join(process.cwd(), 'client/public/music');
+    if (!fs.existsSync(musicDir)) {
+      fs.mkdirSync(musicDir, { recursive: true });
+    }
+    
+    // Generate a unique filename
+    const randomName = crypto.randomBytes(16).toString('hex');
+    const fileExtension = path.extname(file.originalname);
+    const fileName = `${randomName}${fileExtension}`;
+    
+    // Path relative to public directory
+    const relativePath = `/music/${fileName}`;
+    
+    // Full path
+    const filePath = path.join(process.cwd(), 'client/public', relativePath);
+    
+    // Write file to disk
+    await fs.promises.writeFile(filePath, file.buffer);
+    
     return relativePath;
   }
 }

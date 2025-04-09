@@ -30,6 +30,16 @@ export const guestMessages = pgTable("guest_messages", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
+// Schema for music tracks
+export const musicTracks = pgTable("music_tracks", {
+  id: serial("id").primaryKey(),
+  title: text("title").notNull(),
+  artist: text("artist"),
+  filePath: text("file_path").notNull(),
+  isActive: boolean("is_active").default(false),
+  uploadedAt: timestamp("uploaded_at").defaultNow().notNull(),
+});
+
 export const insertUserSchema = createInsertSchema(users).pick({
   username: true,
   password: true,
@@ -79,6 +89,27 @@ export type User = typeof users.$inferSelect;
 export type InsertRsvp = z.infer<typeof insertRsvpSchema>;
 export type Rsvp = typeof rsvps.$inferSelect;
 
+// Schema for music tracks
+export const insertMusicTrackSchema = createInsertSchema(musicTracks).pick({
+  title: true,
+  artist: true,
+  filePath: true,
+  isActive: true,
+});
+
+// Form schema for music track uploads
+export const musicTrackFormSchema = insertMusicTrackSchema.extend({
+  title: z.string().min(1, "Title is required"),
+  artist: z.string().optional(),
+  filePath: z.string(), // Required after file upload
+  isActive: z.boolean().default(false),
+  musicFile: z.any().optional() // This will represent the uploaded music file
+});
+
 export type InsertGuestMessage = z.infer<typeof insertGuestMessageSchema>;
 export type GuestMessage = typeof guestMessages.$inferSelect;
 export type GuestMessageFormValues = z.infer<typeof guestMessageFormSchema>;
+
+export type InsertMusicTrack = z.infer<typeof insertMusicTrackSchema>;
+export type MusicTrack = typeof musicTracks.$inferSelect;
+export type MusicTrackFormValues = z.infer<typeof musicTrackFormSchema>;

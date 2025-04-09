@@ -1,7 +1,8 @@
 import { 
   type User, type InsertUser, 
   type Rsvp, type InsertRsvp,
-  type GuestMessage, type InsertGuestMessage
+  type GuestMessage, type InsertGuestMessage,
+  type MusicTrack, type InsertMusicTrack
 } from "@shared/schema";
 
 // Define a simplified Multer file interface instead of importing from multer
@@ -25,7 +26,18 @@ export interface IStorage {
   // Guest message board methods
   createGuestMessage(message: InsertGuestMessage): Promise<GuestMessage>;
   getGuestMessages(): Promise<GuestMessage[]>;
+  getGuestMessageById(id: number): Promise<GuestMessage | undefined>;
+  updateGuestMessageApproval(id: number, approved: boolean): Promise<GuestMessage | undefined>;
+  deleteGuestMessage(id: number): Promise<boolean>;
   savePhotoAndGetUrl(file: UploadedFile): Promise<string>;
+  
+  // Music track methods
+  createMusicTrack(track: InsertMusicTrack): Promise<MusicTrack>;
+  getMusicTracks(): Promise<MusicTrack[]>;
+  getActiveMusicTrack(): Promise<MusicTrack | undefined>;
+  setActiveMusicTrack(id: number): Promise<boolean>;
+  deleteMusicTrack(id: number): Promise<boolean>;
+  saveMusicAndGetUrl(file: UploadedFile): Promise<string>;
 }
 
 import { SqliteStorage } from './sqlite-storage';
