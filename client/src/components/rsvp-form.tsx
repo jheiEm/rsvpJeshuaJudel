@@ -39,8 +39,10 @@ const RsvpForm = () => {
     defaultValues: {
       name: "",
       email: "",
-      attending: undefined,
-      guests: 1,
+      phone: "",
+      status: undefined,
+      guestCount: 1,
+      dietaryRestrictions: "",
       message: "",
     },
   });
@@ -184,10 +186,29 @@ const RsvpForm = () => {
                 )}
               />
               
+              {/* Phone Field */}
+              <FormField
+                control={form.control}
+                name="phone"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="font-['Cormorant_Garamond'] text-[#4a5568]">Phone Number*</FormLabel>
+                    <FormControl>
+                      <Input 
+                        {...field} 
+                        type="tel" 
+                        className="w-full px-4 py-2 border border-[#e8c1c8] rounded-md focus:outline-none focus:ring-2 focus:ring-[#e8c1c8]" 
+                      />
+                    </FormControl>
+                    <FormMessage className="text-red-500 text-sm mt-1" />
+                  </FormItem>
+                )}
+              />
+              
               {/* Attending Field */}
               <FormField
                 control={form.control}
-                name="attending"
+                name="status"
                 render={({ field }) => (
                   <FormItem className="space-y-3">
                     <FormLabel className="font-['Cormorant_Garamond'] text-[#4a5568]">Will you be attending?*</FormLabel>
@@ -195,15 +216,19 @@ const RsvpForm = () => {
                       <RadioGroup
                         onValueChange={field.onChange}
                         value={field.value}
-                        className="flex space-x-4"
+                        className="flex flex-col md:flex-row md:space-x-4 space-y-2 md:space-y-0"
                       >
                         <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="yes" id="attending-yes" />
+                          <RadioGroupItem value="attending" id="attending-yes" />
                           <label htmlFor="attending-yes">Joyfully Accept</label>
                         </div>
                         <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="no" id="attending-no" />
+                          <RadioGroupItem value="not-attending" id="attending-no" />
                           <label htmlFor="attending-no">Regretfully Decline</label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="undecided" id="attending-maybe" />
+                          <label htmlFor="attending-maybe">Not Sure Yet</label>
                         </div>
                       </RadioGroup>
                     </FormControl>
@@ -215,13 +240,13 @@ const RsvpForm = () => {
               {/* Number of Guests Field */}
               <FormField
                 control={form.control}
-                name="guests"
+                name="guestCount"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="font-['Cormorant_Garamond'] text-[#4a5568]">Number of Guests (including yourself)</FormLabel>
                     <Select
                       onValueChange={(value) => field.onChange(parseInt(value))}
-                      defaultValue={field.value.toString()}
+                      defaultValue={field.value?.toString() || "1"}
                     >
                       <FormControl>
                         <SelectTrigger className="w-full border border-[#e8c1c8] rounded-md focus:outline-none focus:ring-2 focus:ring-[#e8c1c8]">
@@ -235,6 +260,26 @@ const RsvpForm = () => {
                         <SelectItem value="4">4</SelectItem>
                       </SelectContent>
                     </Select>
+                    <FormMessage className="text-red-500 text-sm mt-1" />
+                  </FormItem>
+                )}
+              />
+              
+              {/* Dietary Restrictions Field */}
+              <FormField
+                control={form.control}
+                name="dietaryRestrictions"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="font-['Cormorant_Garamond'] text-[#4a5568]">Dietary Restrictions</FormLabel>
+                    <FormControl>
+                      <Textarea 
+                        {...field} 
+                        placeholder="Please let us know of any dietary restrictions or allergies"
+                        rows={2}
+                        className="w-full px-4 py-2 border border-[#e8c1c8] rounded-md focus:outline-none focus:ring-2 focus:ring-[#e8c1c8]" 
+                      />
+                    </FormControl>
                     <FormMessage className="text-red-500 text-sm mt-1" />
                   </FormItem>
                 )}

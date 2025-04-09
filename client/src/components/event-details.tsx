@@ -23,9 +23,9 @@ const EventDetails = () => {
       // Clear the map container in case it was initialized before
       mapRef.current.innerHTML = '';
       
-      // Sample coordinates - using approximation for Lipa City, Philippines
-      const ceremonyCoords = [13.9421, 121.1631]; // St. Therese of the Child Jesus and the Holy Face Parish Church
-      const receptionCoords = [13.9442, 121.1697]; // Mountain Rock Resort
+      // Coordinates for Lipa City, Philippines
+      const ceremonyCoords = [13.9427, 121.1629]; // St. Therese of the Child Jesus and the Holy Face Parish Church
+      const receptionCoords = [13.9386, 121.1603]; // Mountain Rock Resort
       
       // Initialize map centered between the two locations
       map = window.L.map(mapRef.current).setView([
