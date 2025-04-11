@@ -37,8 +37,8 @@ const EventDetails = () => {
       // Exact coordinates for the correct addresses using the provided exact GPS coordinates
       // St Therese Church - X5CW+88P, Santo Tomas-Lipa Rd, Lipa, 4217 Batangas
       // Mountain Rock Resort - X6G4+J47, Santo Tomas - Lipa Rd, Lipa, Batangas
-      const ceremonyCoords = [13.9716247, 121.1967794]; // St. Therese Church in Lipa City (exact coordinates)
-      const receptionCoords = [13.9749066, 121.2007737]; // Mountain Rock Resort in Lipa City (exact coordinates)
+      const ceremonyCoords = [13.9731158, 121.1987017]; // St. Therese Church in Lipa City (exact coordinates)
+      const receptionCoords = [13.976735933046006, 121.2052696479218]; // Mountain Rock Resort in Lipa City (exact coordinates)
 
       // Initialize map centered between the two locations
       map = window.L.map(mapRef.current).setView(
@@ -94,7 +94,7 @@ const EventDetails = () => {
             <h3 class="font-bold text-[#6b0f2b] mb-2">Ceremony</h3>
             <p>St. Therese of the Child Jesus and<br>the Holy Face Parish Church</p>
             <p class="text-xs text-gray-500 mt-1">X5CW+88P, Santo Tomas-Lipa Rd<br>Lipa, 4217 Batangas</p>
-            <a href="https://maps.google.com/?q=13.9716247,121.1967794" target="_blank" class="block mt-2 text-blue-500 text-sm">Open in Google Maps</a>
+            <a href="https://maps.google.com/?q=13.9731158,121.1987017" target="_blank" class="block mt-2 text-blue-500 text-sm">Open in Google Maps</a>
           </div>
         `,
           { maxWidth: 220 },
@@ -111,7 +111,7 @@ const EventDetails = () => {
             <h3 class="font-bold text-[#6b0f2b] mb-2">Reception</h3>
             <p>Mountain Rock Resort</p>
             <p class="text-xs text-gray-500 mt-1">X6G4+J47, Santo Tomas - Lipa Rd<br>Lipa, Batangas</p>
-            <a href="https://maps.google.com/?q=13.9749066,121.2007737" target="_blank" class="block mt-2 text-blue-500 text-sm">Open in Google Maps</a>
+            <a href="https://maps.google.com/?q=13.976735933046006,121.2052696479218" target="_blank" class="block mt-2 text-blue-500 text-sm">Open in Google Maps</a>
           </div>
         `,
           { maxWidth: 220 },
@@ -120,9 +120,9 @@ const EventDetails = () => {
       // Add a polyline to show the route between the ceremony and reception
       const routeCoordinates = [
         ceremonyCoords,
-        [13.9725, 121.1980], // Intersection point 1
-        [13.9735, 121.1990], // Mid-point
-        [13.9740, 121.2000], // Intersection point 2
+        [13.9739, 121.2010], // Intersection point 1
+        [13.9745, 121.2025], // Mid-point
+        [13.9756, 121.2040], // Intersection point 2
         receptionCoords,
       ];
 
@@ -406,7 +406,7 @@ const EventDetails = () => {
 
               <div className="mt-8 flex justify-center">
                 <a
-                  href="https://www.google.com/maps/dir/13.9716247,121.1967794/13.9749066,121.2007737"
+                  href="https://www.google.com/maps/dir/13.9731158,121.1987017/13.976735933046006,121.2052696479218"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="bg-[#6b0f2b] hover:bg-[#890f32] text-white py-2 px-4 rounded-md flex items-center gap-2 transition-all duration-300"
