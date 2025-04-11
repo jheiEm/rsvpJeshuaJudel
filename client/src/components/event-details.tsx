@@ -214,7 +214,7 @@ const EventDetails = () => {
             <ul className="text-[#4a5568] space-y-2 mb-6">
               <li className="flex items-start">
                 <Calendar className="h-5 w-5 text-[#6b0f2b] mr-3 mt-1" />
-                <span>May 3, 2025 | 1:00 PM</span>
+                <span>May 3, 2025 | 12:30 PM</span>
               </li>
               <li className="flex items-start">
                 <MapPin className="h-5 w-5 text-[#6b0f2b] mr-3 mt-1" />
