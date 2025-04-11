@@ -31,6 +31,7 @@ sqlite.exec(`
     phone TEXT NOT NULL,
     status TEXT NOT NULL,
     guest_count INTEGER NOT NULL,
+    additional_guests TEXT,
     dietary_restrictions TEXT,
     message TEXT,
     created_at TEXT NOT NULL
@@ -94,6 +95,8 @@ export class SqliteStorage implements IStorage {
     const createdAt = new Date().toISOString();
     const sanitizedData = {
       ...rsvp,
+      email: rsvp.email || null,
+      additionalGuests: rsvp.additionalGuests || null,
       dietaryRestrictions: rsvp.dietaryRestrictions || null,
       message: rsvp.message || null,
       createdAt
@@ -113,6 +116,87 @@ export class SqliteStorage implements IStorage {
 
   async getRsvpByEmail(email: string): Promise<Rsvp | undefined> {
     return db.select().from(rsvps).where(eq(rsvps.email, email)).get();
+  }
+  
+  async getRsvpById(id: number): Promise<Rsvp | undefined> {
+    return db.select().from(rsvps).where(eq(rsvps.id, id)).get();
+  }
+  
+  async updateRsvp(id: number, rsvpData: Partial<InsertRsvp>): Promise<Rsvp | undefined> {
+    // Get existing RSVP to ensure it exists
+    const existingRsvp = await this.getRsvpById(id);
+    if (!existingRsvp) return undefined;
+    
+    // Build update SQL dynamically based on provided fields
+    const updates: string[] = [];
+    const values: any[] = [];
+    
+    if (rsvpData.name !== undefined) {
+      updates.push("name = ?");
+      values.push(rsvpData.name);
+    }
+    
+    if (rsvpData.email !== undefined) {
+      updates.push("email = ?");
+      values.push(rsvpData.email || null);
+    }
+    
+    if (rsvpData.phone !== undefined) {
+      updates.push("phone = ?");
+      values.push(rsvpData.phone);
+    }
+    
+    if (rsvpData.status !== undefined) {
+      updates.push("status = ?");
+      values.push(rsvpData.status);
+    }
+    
+    if (rsvpData.guestCount !== undefined) {
+      updates.push("guest_count = ?");
+      values.push(rsvpData.guestCount);
+    }
+    
+    if (rsvpData.additionalGuests !== undefined) {
+      updates.push("additional_guests = ?");
+      values.push(rsvpData.additionalGuests || null);
+    }
+    
+    if (rsvpData.dietaryRestrictions !== undefined) {
+      updates.push("dietary_restrictions = ?");
+      values.push(rsvpData.dietaryRestrictions || null);
+    }
+    
+    if (rsvpData.message !== undefined) {
+      updates.push("message = ?");
+      values.push(rsvpData.message || null);
+    }
+    
+    // If there are no updates, return the original
+    if (updates.length === 0) {
+      return existingRsvp;
+    }
+    
+    // Execute the update
+    const sql = `UPDATE rsvps SET ${updates.join(", ")} WHERE id = ?`;
+    values.push(id);
+    
+    const stmt = sqlite.prepare(sql);
+    stmt.run(...values);
+    
+    // Return the updated RSVP
+    return this.getRsvpById(id);
+  }
+  
+  async deleteRsvp(id: number): Promise<boolean> {
+    try {
+      const sql = `DELETE FROM rsvps WHERE id = ?`;
+      const stmt = sqlite.prepare(sql);
+      stmt.run(id);
+      return true;
+    } catch (error) {
+      console.error('Error deleting RSVP:', error);
+      return false;
+    }
   }
   
   async createGuestMessage(message: InsertGuestMessage): Promise<GuestMessage> {

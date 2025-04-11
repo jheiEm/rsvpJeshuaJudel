@@ -19,9 +19,14 @@ export interface IStorage {
   getUser(id: number): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
+  
+  // RSVP methods
   createRsvp(rsvp: InsertRsvp): Promise<Rsvp>;
   getRsvps(): Promise<Rsvp[]>;
   getRsvpByEmail(email: string): Promise<Rsvp | undefined>;
+  getRsvpById(id: number): Promise<Rsvp | undefined>;
+  updateRsvp(id: number, rsvp: Partial<InsertRsvp>): Promise<Rsvp | undefined>;
+  deleteRsvp(id: number): Promise<boolean>;
   
   // Guest message board methods
   createGuestMessage(message: InsertGuestMessage): Promise<GuestMessage>;

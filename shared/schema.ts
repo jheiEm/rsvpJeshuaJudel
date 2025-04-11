@@ -15,6 +15,7 @@ export const rsvps = pgTable("rsvps", {
   phone: text("phone").notNull(),
   status: text("status").notNull(), // "attending", "not-attending", "undecided"
   guestCount: integer("guest_count").notNull(),
+  additionalGuests: text("additional_guests"), // Stores comma-separated additional guest names
   dietaryRestrictions: text("dietary_restrictions"),
   message: text("message"),
   createdAt: text("created_at").notNull(),
@@ -52,6 +53,7 @@ export const insertRsvpSchema = createInsertSchema(rsvps).pick({
   phone: true,
   status: true,
   guestCount: true,
+  additionalGuests: true,
   dietaryRestrictions: true,
   message: true,
 });
@@ -65,6 +67,7 @@ export const rsvpFormSchema = insertRsvpSchema.extend({
     errorMap: () => ({ message: "Please select an option" }),
   }),
   guestCount: z.coerce.number().min(1).max(4, "Maximum of 4 guests allowed"),
+  additionalGuests: z.string().optional(),
   dietaryRestrictions: z.string().optional(),
   message: z.string().optional(),
 });

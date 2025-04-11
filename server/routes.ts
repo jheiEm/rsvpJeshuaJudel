@@ -85,12 +85,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Validate the request data against our schema
       const validatedData = rsvpFormSchema.parse(req.body);
       
+      // Add the additionalGuests field if present in the request body
+      if (req.body.additionalGuests) {
+        validatedData.additionalGuests = req.body.additionalGuests;
+      }
+      
       // Check if email already exists
-      const existingRsvp = await storage.getRsvpByEmail(validatedData.email);
-      if (existingRsvp) {
-        return res.status(400).json({
-          message: "This email has already been used to RSVP"
-        });
+      if (validatedData.email) {
+        const existingRsvp = await storage.getRsvpByEmail(validatedData.email);
+        if (existingRsvp) {
+          return res.status(400).json({
+            message: "This email has already been used to RSVP"
+          });
+        }
       }
       
       // Create the RSVP in storage
@@ -116,6 +123,92 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error("Error creating RSVP:", error);
       res.status(500).json({
         message: "Failed to submit RSVP. Please try again later.",
+      });
+    }
+  });
+  
+  // Get all RSVPs (admin only)
+  app.get("/api/admin/rsvps", isAuthenticated, async (req, res) => {
+    try {
+      const rsvps = await storage.getRsvps();
+      res.status(200).json(rsvps);
+    } catch (error) {
+      console.error("Error fetching RSVPs:", error);
+      res.status(500).json({
+        message: "Failed to retrieve RSVPs. Please try again later."
+      });
+    }
+  });
+  
+  // Get a specific RSVP by ID (admin only)
+  app.get("/api/admin/rsvps/:id", isAuthenticated, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "Invalid RSVP ID" });
+      }
+      
+      const rsvp = await storage.getRsvpById(id);
+      if (!rsvp) {
+        return res.status(404).json({ message: "RSVP not found" });
+      }
+      
+      res.status(200).json(rsvp);
+    } catch (error) {
+      console.error("Error fetching RSVP:", error);
+      res.status(500).json({
+        message: "Failed to retrieve RSVP. Please try again later."
+      });
+    }
+  });
+  
+  // Update a specific RSVP (admin only)
+  app.put("/api/admin/rsvps/:id", isAuthenticated, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "Invalid RSVP ID" });
+      }
+      
+      // Validate the updated data
+      const updateData = req.body;
+      
+      // Update the RSVP
+      const updatedRsvp = await storage.updateRsvp(id, updateData);
+      if (!updatedRsvp) {
+        return res.status(404).json({ message: "RSVP not found" });
+      }
+      
+      res.status(200).json({
+        message: "RSVP updated successfully",
+        rsvp: updatedRsvp
+      });
+    } catch (error) {
+      console.error("Error updating RSVP:", error);
+      res.status(500).json({
+        message: "Failed to update RSVP. Please try again later."
+      });
+    }
+  });
+  
+  // Delete a specific RSVP (admin only)
+  app.delete("/api/admin/rsvps/:id", isAuthenticated, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "Invalid RSVP ID" });
+      }
+      
+      const success = await storage.deleteRsvp(id);
+      if (!success) {
+        return res.status(404).json({ message: "RSVP not found or couldn't be deleted" });
+      }
+      
+      res.status(200).json({ message: "RSVP deleted successfully" });
+    } catch (error) {
+      console.error("Error deleting RSVP:", error);
+      res.status(500).json({
+        message: "Failed to delete RSVP. Please try again later."
       });
     }
   });
@@ -214,17 +307,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
   
   // Protected admin routes - only accessible to authenticated admins
-  app.get("/api/admin/rsvps", isAuthenticated, async (req, res) => {
-    try {
-      const rsvps = await storage.getRsvps();
-      res.json(rsvps);
-    } catch (error: unknown) {
-      console.error("Error fetching RSVPs:", error);
-      res.status(500).json({
-        message: "Failed to retrieve RSVPs",
-      });
-    }
-  });
   
   // Admin route to get guest messages (including unapproved ones)
   app.get("/api/admin/guest-messages", isAuthenticated, async (req, res) => {
