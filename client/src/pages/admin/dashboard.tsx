@@ -54,6 +54,8 @@ const MusicManagement = () => {
       title: '',
       artist: '',
       isActive: false,
+      isYoutubeLink: false,
+      youtubeUrl: '',
     },
   });
   
@@ -178,18 +180,34 @@ const MusicManagement = () => {
     formData.append('title', data.title);
     if (data.artist) formData.append('artist', data.artist);
     formData.append('isActive', data.isActive ? 'true' : 'false');
+    formData.append('isYoutubeLink', data.isYoutubeLink ? 'true' : 'false');
     
-    // Get the file from the form
-    const fileInput = document.getElementById('musicFile') as HTMLInputElement;
-    if (fileInput && fileInput.files && fileInput.files.length > 0) {
-      formData.append('musicFile', fileInput.files[0]);
+    if (data.isYoutubeLink) {
+      // Handle YouTube link
+      if (!data.youtubeUrl) {
+        toast({
+          title: 'Error',
+          description: 'Please enter a YouTube URL',
+          variant: 'destructive',
+        });
+        return;
+      }
+      
+      formData.append('youtubeUrl', data.youtubeUrl);
       uploadTrack(formData);
     } else {
-      toast({
-        title: 'Error',
-        description: 'Please select a music file',
-        variant: 'destructive',
-      });
+      // Handle file upload
+      const fileInput = document.getElementById('musicFile') as HTMLInputElement;
+      if (fileInput && fileInput.files && fileInput.files.length > 0) {
+        formData.append('musicFile', fileInput.files[0]);
+        uploadTrack(formData);
+      } else {
+        toast({
+          title: 'Error',
+          description: 'Please select a music file',
+          variant: 'destructive',
+        });
+      }
     }
   };
   
@@ -301,20 +319,60 @@ const MusicManagement = () => {
                       </FormItem>
                     )}
                   />
-                  <FormItem>
-                    <FormLabel>Music File</FormLabel>
-                    <FormControl>
-                      <Input 
-                        id="musicFile" 
-                        type="file" 
-                        accept="audio/mp3,audio/wav,audio/ogg,audio/mpeg" 
-                      />
-                    </FormControl>
-                    <FormDescription>
-                      Upload MP3, WAV, or OGG files (max 10MB)
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
+                  <FormField
+                    control={form.control}
+                    name="isYoutubeLink"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-row items-center justify-between rounded-lg border border-[#e8c1c8] p-3">
+                        <div className="space-y-0.5">
+                          <FormLabel>Use YouTube Link</FormLabel>
+                          <FormDescription>
+                            Add music from YouTube instead of uploading a file
+                          </FormDescription>
+                        </div>
+                        <FormControl>
+                          <Switch
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                          />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                  
+                  {form.watch("isYoutubeLink") ? (
+                    <FormField
+                      control={form.control}
+                      name="youtubeUrl"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>YouTube URL</FormLabel>
+                          <FormControl>
+                            <Input placeholder="https://www.youtube.com/watch?v=dQw4w9WgXcQ" {...field} />
+                          </FormControl>
+                          <FormDescription>
+                            Enter a valid YouTube video URL
+                          </FormDescription>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  ) : (
+                    <FormItem>
+                      <FormLabel>Music File</FormLabel>
+                      <FormControl>
+                        <Input 
+                          id="musicFile" 
+                          type="file" 
+                          accept="audio/mp3,audio/wav,audio/ogg,audio/mpeg" 
+                        />
+                      </FormControl>
+                      <FormDescription>
+                        Upload MP3, WAV, or OGG files (max 10MB)
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
                   <FormField
                     control={form.control}
                     name="isActive"
