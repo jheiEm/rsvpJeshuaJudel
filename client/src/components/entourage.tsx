@@ -3,6 +3,8 @@ import { motion } from "framer-motion";
 interface EntourageGroup {
   title: string;
   members: string[];
+  icon?: React.ReactNode;
+  description?: string;
 }
 
 interface EntourageSectionProps {
@@ -44,14 +46,22 @@ const EntourageSection = ({ title, left, right }: EntourageSectionProps) => {
               transition={{ duration: 0.5, delay: index * 0.1 }}
               viewport={{ once: true }}
             >
+              {group.icon && (
+                <div className="mb-2">
+                  {group.icon}
+                </div>
+              )}
               <h4 className="font-['Cormorant_Garamond'] text-xl text-[#6b0f2b] uppercase tracking-wider text-center mb-4 pb-2 border-b border-[#e8c1c8]">
                 {group.title}
               </h4>
               <ul className="text-center space-y-2">
                 {group.members.map((member, i) => (
-                  <li key={i} className="text-[#4a5568] font-['Cormorant_Garamond'] tracking-wide">{member}</li>
+                  <li key={i} className={`text-[#4a5568] font-['Cormorant_Garamond'] tracking-wide ${member.includes("To ") ? "font-semibold text-[#6b0f2b] mt-4 first:mt-0" : ""}`}>{member}</li>
                 ))}
               </ul>
+              {group.description && (
+                <p className="mt-4 text-[#718096] text-sm italic text-center">{group.description}</p>
+              )}
             </motion.div>
           ))}
         </div>
@@ -67,14 +77,22 @@ const EntourageSection = ({ title, left, right }: EntourageSectionProps) => {
               transition={{ duration: 0.5, delay: index * 0.1 }}
               viewport={{ once: true }}
             >
+              {group.icon && (
+                <div className="mb-2">
+                  {group.icon}
+                </div>
+              )}
               <h4 className="font-['Cormorant_Garamond'] text-xl text-[#6b0f2b] uppercase tracking-wider text-center mb-4 pb-2 border-b border-[#e8c1c8]">
                 {group.title}
               </h4>
               <ul className="text-center space-y-2">
                 {group.members.map((member, i) => (
-                  <li key={i} className="text-[#4a5568] font-['Cormorant_Garamond'] tracking-wide">{member}</li>
+                  <li key={i} className={`text-[#4a5568] font-['Cormorant_Garamond'] tracking-wide ${member.includes("To ") ? "font-semibold text-[#6b0f2b] mt-4 first:mt-0" : ""}`}>{member}</li>
                 ))}
               </ul>
+              {group.description && (
+                <p className="mt-4 text-[#718096] text-sm italic text-center">{group.description}</p>
+              )}
             </motion.div>
           ))}
         </div>
@@ -252,7 +270,16 @@ const Entourage = () => {
           "To Cloth Us As One",
           "MR. IROX ANDREW S. CABISCUELAS",
           "MS. CLARISSE ZUÑO"
-        ]
+        ],
+        icon: (
+          <svg width="40" height="40" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" className="mx-auto mb-3">
+            <path d="M12,4A6,6 0 0,1 18,10C18,12.97 15.84,15.44 13,15.92V18H15V20H13V22H11V20H9V18H11V15.92C8.16,15.44 6,12.97 6,10A6,6 0 0,1 12,4M12,6A4,4 0 0,0 8,10A4,4 0 0,0 12,14A4,4 0 0,0 16,10A4,4 0 0,0 12,6Z" 
+              fill="#6b0f2b" 
+              className="drop-shadow-md"
+            />
+          </svg>
+        ),
+        description: "The veil and cord symbolize the clothing of the couple as one in their marriage journey."
       },
       {
         title: "Groomsmen",
@@ -261,7 +288,15 @@ const Entourage = () => {
           "MR. JOVERT L. MENDOZA",
           "MR. JOHN DIONSEPH A. MERU",
           "MR. MARK DAVID T. MERU"
-        ]
+        ],
+        icon: (
+          <svg width="40" height="40" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" className="mx-auto mb-3">
+            <path d="M12 4C14.21 4 16 5.79 16 8S14.21 12 12 12 8 10.21 8 8 9.79 4 12 4M12 14C16.42 14 20 15.79 20 18V20H4V18C4 15.79 7.58 14 12 14Z" 
+              fill="#6b0f2b" 
+              className="drop-shadow-md"
+            />
+          </svg>
+        )
       }
     ],
     right: [
@@ -298,7 +333,24 @@ const Entourage = () => {
           "To Light Our Path",
           "MR. JOHN CZAR F. MERU",
           "MS. EHRA MAYEL H. MENDOZA"
-        ]
+        ],
+        icon: (
+          <div className="flex justify-center space-x-4 mb-3">
+            <svg width="40" height="40" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M16,12V4H17V2H7V4H8V12L6,14V16H11.2V22H12.8V16H18V14L16,12M8.8,14L10,12.8V4H14V12.8L15.2,14H8.8Z" 
+                fill="#6b0f2b" 
+                className="drop-shadow-md"
+              />
+            </svg>
+            <svg width="40" height="40" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4M12,6A6,6 0 0,0 6,12A6,6 0 0,0 12,18A6,6 0 0,0 18,12A6,6 0 0,0 12,6M12,8A4,4 0 0,1 16,12A4,4 0 0,1 12,16A4,4 0 0,1 8,12A4,4 0 0,1 12,8Z" 
+                fill="#6b0f2b" 
+                className="drop-shadow-md"
+              />
+            </svg>
+          </div>
+        ),
+        description: "The cord symbolizes the binding of the couple as one, while the candles represent the light that will guide their path."
       },
       {
         title: "Bridesmaid",
@@ -307,7 +359,15 @@ const Entourage = () => {
           "MS. MIKAS T. MERU",
           "MS. HARMOINIE A. NACIS",
           "MRS. MAUREEN L. QUIROZ"
-        ]
+        ],
+        icon: (
+          <svg width="40" height="40" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" className="mx-auto mb-3">
+            <path d="M16.5,12A2.5,2.5 0 0,0 19,9.5A2.5,2.5 0 0,0 16.5,7A2.5,2.5 0 0,0 14,9.5A2.5,2.5 0 0,0 16.5,12M9,11A3,3 0 0,0 12,8A3,3 0 0,0 9,5A3,3 0 0,0 6,8A3,3 0 0,0 9,11M16.5,14C14.67,14 11,14.92 11,16.75V19H22V16.75C22,14.92 18.33,14 16.5,14M9,13C6.67,13 2,14.17 2,16.5V19H9V16.75C9,15.9 9.33,14.41 11.37,13.28C10.5,13.1 9.66,13 9,13Z" 
+              fill="#6b0f2b" 
+              className="drop-shadow-md"
+            />
+          </svg>
+        )
       }
     ]
   };
