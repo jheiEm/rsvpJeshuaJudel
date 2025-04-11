@@ -56,7 +56,28 @@
   transform: scale(1.05);
 }
 
-/* Smooth scrolling for all anchors */
+/* Smooth scrolling and overflow control */
 html {
   scroll-behavior: smooth;
+  overflow-x: hidden;
+}
+
+body {
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* Music player and tour button fixes */
+.fixed {
+  max-width: calc(100% - 2rem);
+  z-index: 50;
+}
+
+/* Ensure floating controls stay within viewport */
+.bottom-4 {
+  bottom: 1rem;
+}
+
+.right-4 {
+  right: 1rem;
 }

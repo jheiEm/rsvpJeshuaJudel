@@ -209,7 +209,7 @@ const HeroSection = () => {
       
       scrollTimeoutRef.current = setTimeout(() => {
         startAutoScroll();
-      }, 12000); // Wait 12 seconds at each section
+      }, 15000); // Wait 15 seconds at each section
     }
   }, [isAutoScrolling, currentSectionIndex, scrollToSection]);
 
