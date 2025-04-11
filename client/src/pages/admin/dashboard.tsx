@@ -588,10 +588,10 @@ const AdminDashboard = () => {
     const searchLower = searchTerm.toLowerCase();
     return (
       rsvp.name.toLowerCase().includes(searchLower) ||
-      rsvp.email.toLowerCase().includes(searchLower) ||
+      (rsvp.email?.toLowerCase().includes(searchLower) || false) ||
       rsvp.phone.toLowerCase().includes(searchLower) ||
       rsvp.guestCount.toString().includes(searchLower) ||
-      rsvp.message?.toLowerCase().includes(searchLower) ||
+      (rsvp.message?.toLowerCase().includes(searchLower) || false) ||
       rsvp.status.toLowerCase().includes(searchLower)
     );
   });
@@ -607,7 +607,7 @@ const AdminDashboard = () => {
       headers.join(','),
       ...rsvps.map(rsvp => [
         `"${rsvp.name.replace(/"/g, '""')}"`,
-        `"${rsvp.email.replace(/"/g, '""')}"`,
+        `"${(rsvp.email || '').replace(/"/g, '""')}"`,
         `"${rsvp.phone.replace(/"/g, '""')}"`,
         rsvp.guestCount,
         rsvp.status === 'attending' ? 'Yes' : rsvp.status === 'not-attending' ? 'No' : 'Maybe',
@@ -690,7 +690,16 @@ const AdminDashboard = () => {
             {/* RSVP Tab */}
             <TabsContent value="rsvps" className="space-y-6">
               <div className="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4">
-                <h2 className="text-xl font-semibold text-[#4a5568]">Wedding RSVPs</h2>
+                <div className="flex flex-col md:flex-row items-start md:items-center gap-4">
+                  <h2 className="text-xl font-semibold text-[#4a5568]">Wedding RSVPs</h2>
+                  <Button onClick={() => setLocation('/admin/rsvps')} className="flex items-center gap-2">
+                    <span>Go to RSVP Management</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4">
+                      <path d="M5 12h14"></path>
+                      <path d="m12 5 7 7-7 7"></path>
+                    </svg>
+                  </Button>
+                </div>
                 <div className="flex items-center gap-3">
                   <div className="relative">
                     <Search className="absolute left-2 top-2.5 h-4 w-4 text-gray-400" />

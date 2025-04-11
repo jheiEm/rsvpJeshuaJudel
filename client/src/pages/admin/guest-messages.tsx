@@ -230,9 +230,20 @@ const GuestMessagesAdminPage = () => {
     );
   }
 
+  const [, setLocation] = useLocation();
+
   return (
     <div className="container mx-auto p-6">
-      <h1 className="text-3xl font-bold mb-6">Guest Messages Management</h1>
+      <div className="flex flex-col md:flex-row justify-between items-center mb-6">
+        <h1 className="text-3xl font-bold">Guest Messages Management</h1>
+        <Button 
+          variant="outline" 
+          className="mt-4 md:mt-0"
+          onClick={() => setLocation('/admin/dashboard')}
+        >
+          ← Back to Dashboard
+        </Button>
+      </div>
       
       {isLoading ? (
         <div className="flex justify-center my-12">

@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { toast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
+import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -209,9 +210,20 @@ const RsvpsAdminPage = () => {
     );
   }
 
+  const [, setLocation] = useLocation();
+
   return (
     <div className="container mx-auto p-6">
-      <h1 className="text-3xl font-bold mb-6">RSVP Management</h1>
+      <div className="flex flex-col md:flex-row justify-between items-center mb-6">
+        <h1 className="text-3xl font-bold">RSVP Management</h1>
+        <Button 
+          variant="outline" 
+          className="mt-4 md:mt-0"
+          onClick={() => setLocation('/admin/dashboard')}
+        >
+          ← Back to Dashboard
+        </Button>
+      </div>
       
       {isLoading ? (
         <div className="flex justify-center my-12">
