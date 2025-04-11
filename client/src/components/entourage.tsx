@@ -62,6 +62,11 @@ const EntourageSection = ({ title, left, right }: EntourageSectionProps) => {
               className="relative backdrop-blur-sm p-6 rounded-lg bg-gradient-to-b from-white to-[#fef2f4] border-2 border-[#8a1538] shadow-md"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
+              whileHover={{ 
+                y: -5, 
+                scale: 1.02,
+                boxShadow: "0 10px 25px -5px rgba(107, 15, 43, 0.2), 0 8px 10px -6px rgba(107, 15, 43, 0.1)" 
+              }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
               viewport={{ once: true }}
             >
@@ -93,6 +98,11 @@ const EntourageSection = ({ title, left, right }: EntourageSectionProps) => {
               className="relative backdrop-blur-sm p-6 rounded-lg bg-gradient-to-b from-white to-[#fef2f4] border-2 border-[#8a1538] shadow-md"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
+              whileHover={{ 
+                y: -5, 
+                scale: 1.02,
+                boxShadow: "0 10px 25px -5px rgba(107, 15, 43, 0.2), 0 8px 10px -6px rgba(107, 15, 43, 0.1)" 
+              }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
               viewport={{ once: true }}
             >
@@ -124,6 +134,11 @@ const EntourageSection = ({ title, left, right }: EntourageSectionProps) => {
             className="relative backdrop-blur-sm p-6 rounded-lg bg-gradient-to-b from-white to-[#fef2f4] border-2 border-[#8a1538] shadow-md"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
+            whileHover={{ 
+              y: -5, 
+              scale: 1.02,
+              boxShadow: "0 10px 25px -5px rgba(107, 15, 43, 0.2), 0 8px 10px -6px rgba(107, 15, 43, 0.1)" 
+            }}
             transition={{ duration: 0.5, delay: 0.5 }}
             viewport={{ once: true }}
           >
@@ -219,9 +234,14 @@ const WeddingSymbols = () => {
           {symbols.map((symbol, index) => (
             <motion.div 
               key={index} 
-              className="text-center bg-gradient-to-b from-white to-[#fef2f4] backdrop-blur-sm p-6 rounded-lg shadow-md border-2 border-[#8a1538] hover:-translate-y-1 transition-all duration-300"
+              className="text-center bg-gradient-to-b from-white to-[#fef2f4] backdrop-blur-sm p-6 rounded-lg shadow-md border-2 border-[#8a1538]"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
+              whileHover={{ 
+                y: -5, 
+                scale: 1.02,
+                boxShadow: "0 10px 25px -5px rgba(107, 15, 43, 0.2), 0 8px 10px -6px rgba(107, 15, 43, 0.1)" 
+              }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
               viewport={{ once: true }}
             >
@@ -240,6 +260,11 @@ const WeddingSymbols = () => {
           className="text-center bg-gradient-to-b from-white to-[#fef2f4] backdrop-blur-sm p-6 rounded-lg shadow-md border-2 border-[#8a1538] relative overflow-hidden max-w-2xl mx-auto"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
+          whileHover={{ 
+            y: -5, 
+            scale: 1.01,
+            boxShadow: "0 10px 25px -5px rgba(107, 15, 43, 0.2), 0 8px 10px -6px rgba(107, 15, 43, 0.1)" 
+          }}
           transition={{ duration: 0.5, delay: 0.3 }}
           viewport={{ once: true }}
         >
@@ -428,13 +453,20 @@ const Entourage = () => {
     <section id="entourage" className="py-20 bg-white">
       <div className="container mx-auto px-4">
         <motion.h2 
-          className="font-['Great_Vibes'] text-4xl md:text-5xl text-[#6b0f2b] text-center mb-16"
+          className="font-['Great_Vibes'] text-4xl md:text-5xl text-[#6b0f2b] text-center mb-16 relative"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
           viewport={{ once: true }}
         >
           Wedding Party
+          <motion.div 
+            className="absolute h-[2px] w-40 bg-gradient-to-r from-transparent via-[#6b0f2b] to-transparent mx-auto left-1/2 transform -translate-x-1/2 bottom-[-0.5rem]"
+            initial={{ width: 0, opacity: 0 }}
+            whileInView={{ width: "10rem", opacity: 1 }}
+            transition={{ duration: 0.8, delay: 0.3 }}
+            viewport={{ once: true }}
+          />
         </motion.h2>
         
         <motion.div

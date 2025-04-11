@@ -175,6 +175,8 @@ const MusicManagement = () => {
   
   // Handle form submission
   const onSubmit = (data: MusicTrackFormValues) => {
+    console.log("Form submitted with data:", data);
+    
     // We need to create a FormData object to upload the file
     const formData = new FormData();
     formData.append('title', data.title);
@@ -193,7 +195,14 @@ const MusicManagement = () => {
         return;
       }
       
+      console.log("Submitting YouTube URL:", data.youtubeUrl);
       formData.append('youtubeUrl', data.youtubeUrl);
+      
+      // Explicitly log FormData contents for debugging
+      formData.forEach((value, key) => {
+        console.log(`Form data: ${key} = ${value}`);
+      });
+      
       uploadTrack(formData);
     } else {
       // Handle file upload
