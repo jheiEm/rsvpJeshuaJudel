@@ -242,7 +242,7 @@ const RsvpForm = () => {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="font-['Cormorant_Garamond'] text-[#4a5568]">
-                      Email Address*
+                      Email Address
                     </FormLabel>
                     <FormControl>
                       <Input

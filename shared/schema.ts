@@ -11,7 +11,7 @@ export const users = pgTable("users", {
 export const rsvps = pgTable("rsvps", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(),
-  email: text("email").notNull(),
+  email: text("email"),
   phone: text("phone").notNull(),
   status: text("status").notNull(), // "attending", "not-attending", "undecided"
   guestCount: integer("guest_count").notNull(),
@@ -59,7 +59,7 @@ export const insertRsvpSchema = createInsertSchema(rsvps).pick({
 // Extend the schema to add validation
 export const rsvpFormSchema = insertRsvpSchema.extend({
   name: z.string().min(2, "Name is required"),
-  email: z.string().email("Please enter a valid email address"),
+  email: z.string().email("Please enter a valid email address").optional(),
   phone: z.string().min(7, "Phone number is required"),
   status: z.enum(["attending", "not-attending", "undecided"], {
     errorMap: () => ({ message: "Please select an option" }),
