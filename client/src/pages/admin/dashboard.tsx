@@ -43,6 +43,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 const MusicManagement = () => {
   const { toast } = useToast();
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [playingTrackId, setPlayingTrackId] = useState<number | null>(null);
   const [addMusicOpen, setAddMusicOpen] = useState(false);
@@ -205,10 +206,19 @@ const MusicManagement = () => {
       
       uploadTrack(formData);
     } else {
-      // Handle file upload
-      const fileInput = document.getElementById('musicFile') as HTMLInputElement;
-      if (fileInput && fileInput.files && fileInput.files.length > 0) {
-        formData.append('musicFile', fileInput.files[0]);
+      // Handle file upload using fileInputRef
+      console.log("File input element:", fileInputRef.current);
+      console.log("Files selected:", fileInputRef.current?.files);
+      
+      if (fileInputRef.current && fileInputRef.current.files && fileInputRef.current.files.length > 0) {
+        console.log("File selected:", fileInputRef.current.files[0]);
+        formData.append('musicFile', fileInputRef.current.files[0]);
+        
+        // Log FormData for debugging
+        formData.forEach((value, key) => {
+          console.log(`Form data: ${key} = ${value instanceof File ? value.name : value}`);
+        });
+        
         uploadTrack(formData);
       } else {
         toast({
@@ -371,6 +381,7 @@ const MusicManagement = () => {
                       <FormLabel>Music File</FormLabel>
                       <FormControl>
                         <Input 
+                          ref={fileInputRef}
                           id="musicFile" 
                           type="file" 
                           accept="audio/mp3,audio/wav,audio/ogg,audio/mpeg" 

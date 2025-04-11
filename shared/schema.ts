@@ -103,11 +103,16 @@ export const insertMusicTrackSchema = createInsertSchema(musicTracks).pick({
 export const musicTrackFormSchema = insertMusicTrackSchema.extend({
   title: z.string().min(1, "Title is required"),
   artist: z.string().optional(),
-  filePath: z.string(), // Required after file upload
+  filePath: z.string().optional(), // Made optional for form submission
   isActive: z.boolean().default(false),
   isYoutubeLink: z.boolean().default(false),
   musicFile: z.any().optional(), // This will represent the uploaded music file
-  youtubeUrl: z.string().optional(), // This will be used if it's a YouTube link
+  youtubeUrl: z.string().optional().refine(
+    (val) => !val || val.includes('youtube.com') || val.includes('youtu.be'),
+    {
+      message: 'Please enter a valid YouTube URL',
+    }
+  ), // This will be used if it's a YouTube link
 });
 
 export type InsertGuestMessage = z.infer<typeof insertGuestMessageSchema>;
