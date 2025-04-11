@@ -9,6 +9,8 @@ import Home from "@/pages/home";
 // Lazy load admin pages to improve initial load performance
 const AdminLoginPage = lazy(() => import("@/pages/admin/login"));
 const AdminDashboardPage = lazy(() => import("@/pages/admin/dashboard"));
+const AdminRsvpsPage = lazy(() => import("@/pages/admin/rsvps"));
+const AdminGuestMessagesPage = lazy(() => import("@/pages/admin/guest-messages"));
 
 // Loading fallback component
 const LoadingFallback = () => (
@@ -31,6 +33,16 @@ function Router() {
       <Route path="/admin/dashboard">
         <Suspense fallback={<LoadingFallback />}>
           <AdminDashboardPage />
+        </Suspense>
+      </Route>
+      <Route path="/admin/rsvps">
+        <Suspense fallback={<LoadingFallback />}>
+          <AdminRsvpsPage />
+        </Suspense>
+      </Route>
+      <Route path="/admin/guest-messages">
+        <Suspense fallback={<LoadingFallback />}>
+          <AdminGuestMessagesPage />
         </Suspense>
       </Route>
       <Route component={NotFound} />

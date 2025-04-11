@@ -837,7 +837,15 @@ const AdminDashboard = () => {
             <TabsContent value="messages" className="space-y-6">
               <div className="flex flex-col space-y-4">
                 <h2 className="text-xl font-semibold text-[#4a5568]">Guest Message Moderation</h2>
-                <p className="text-[#718096]">Coming soon - this tab will allow you to approve, edit, or delete guest messages.</p>
+                <div className="flex flex-col md:flex-row gap-4">
+                  <Button onClick={() => setLocation('/admin/guest-messages')} className="flex items-center gap-2">
+                    <span>Go to Guest Messages Management</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4">
+                      <path d="M5 12h14"></path>
+                      <path d="m12 5 7 7-7 7"></path>
+                    </svg>
+                  </Button>
+                </div>
               </div>
             </TabsContent>
           </Tabs>
