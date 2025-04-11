@@ -30,7 +30,7 @@ export interface IStorage {
   
   // Guest message board methods
   createGuestMessage(message: InsertGuestMessage): Promise<GuestMessage>;
-  getGuestMessages(): Promise<GuestMessage[]>;
+  getGuestMessages(adminView?: boolean): Promise<GuestMessage[]>;
   getGuestMessageById(id: number): Promise<GuestMessage | undefined>;
   updateGuestMessageApproval(id: number, approved: boolean): Promise<GuestMessage | undefined>;
   deleteGuestMessage(id: number): Promise<boolean>;

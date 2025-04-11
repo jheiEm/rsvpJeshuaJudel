@@ -270,91 +270,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
-  // Get all RSVPs (admin only)
-  app.get("/api/admin/rsvps", isAuthenticated, async (req, res) => {
-    try {
-      const rsvps = await storage.getRsvps();
-      res.status(200).json(rsvps);
-    } catch (error) {
-      console.error("Error fetching RSVPs:", error);
-      res.status(500).json({
-        message: "Failed to retrieve RSVPs. Please try again later."
-      });
-    }
-  });
-  
-  // Get a specific RSVP by ID (admin only)
-  app.get("/api/admin/rsvps/:id", isAuthenticated, async (req, res) => {
-    try {
-      const id = parseInt(req.params.id);
-      if (isNaN(id)) {
-        return res.status(400).json({ message: "Invalid RSVP ID" });
-      }
-      
-      const rsvp = await storage.getRsvpById(id);
-      if (!rsvp) {
-        return res.status(404).json({ message: "RSVP not found" });
-      }
-      
-      res.status(200).json(rsvp);
-    } catch (error) {
-      console.error("Error fetching RSVP:", error);
-      res.status(500).json({
-        message: "Failed to retrieve RSVP. Please try again later."
-      });
-    }
-  });
-  
-  // Update a specific RSVP (admin only)
-  app.put("/api/admin/rsvps/:id", isAuthenticated, async (req, res) => {
-    try {
-      const id = parseInt(req.params.id);
-      if (isNaN(id)) {
-        return res.status(400).json({ message: "Invalid RSVP ID" });
-      }
-      
-      // Validate the updated data
-      const updateData = req.body;
-      
-      // Update the RSVP
-      const updatedRsvp = await storage.updateRsvp(id, updateData);
-      if (!updatedRsvp) {
-        return res.status(404).json({ message: "RSVP not found" });
-      }
-      
-      res.status(200).json({
-        message: "RSVP updated successfully",
-        rsvp: updatedRsvp
-      });
-    } catch (error) {
-      console.error("Error updating RSVP:", error);
-      res.status(500).json({
-        message: "Failed to update RSVP. Please try again later."
-      });
-    }
-  });
-  
-  // Delete a specific RSVP (admin only)
-  app.delete("/api/admin/rsvps/:id", isAuthenticated, async (req, res) => {
-    try {
-      const id = parseInt(req.params.id);
-      if (isNaN(id)) {
-        return res.status(400).json({ message: "Invalid RSVP ID" });
-      }
-      
-      const success = await storage.deleteRsvp(id);
-      if (!success) {
-        return res.status(404).json({ message: "RSVP not found or couldn't be deleted" });
-      }
-      
-      res.status(200).json({ message: "RSVP deleted successfully" });
-    } catch (error) {
-      console.error("Error deleting RSVP:", error);
-      res.status(500).json({
-        message: "Failed to delete RSVP. Please try again later."
-      });
-    }
-  });
+  // The admin RSVP routes are already defined above
 
   // Guest Message Board Endpoints
   
@@ -422,39 +338,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Admin routes
-  app.post("/api/admin/login", (req, res) => {
-    // In a real application, you would validate against a database
-    // For this example, we'll use a hardcoded username/password
-    const { username, password } = req.body;
-    
-    // Replace with your desired admin credentials
-    const ADMIN_USERNAME = "admin";
-    const ADMIN_PASSWORD = "wedding2025";
-    
-    if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
-      // Set the admin as authenticated in the session
-      req.session.adminAuthenticated = true;
-      res.status(200).json({ success: true });
-    } else {
-      res.status(401).json({ message: "Invalid credentials" });
-    }
-  });
-  
-  app.post("/api/admin/logout", (req, res) => {
-    // Clear the session
-    if (req.session) {
-      req.session.adminAuthenticated = false;
-    }
-    res.status(200).json({ success: true });
-  });
+  // Admin routes already defined above
   
   // Protected admin routes - only accessible to authenticated admins
   
   // Admin route to get guest messages (including unapproved ones)
   app.get("/api/admin/guest-messages", isAuthenticated, async (req, res) => {
     try {
-      const messages = await storage.getGuestMessages();
+      const messages = await storage.getGuestMessages(true); // true = adminView
       res.json(messages);
     } catch (error) {
       console.error("Error fetching guest messages:", error);

@@ -231,10 +231,13 @@ export class SqliteStorage implements IStorage {
     };
   }
   
-  async getGuestMessages(): Promise<GuestMessage[]> {
+  async getGuestMessages(adminView = false): Promise<GuestMessage[]> {
     try {
-      // Use raw SQL to get all messages
-      const query = `SELECT * FROM guest_messages WHERE approved = 1 ORDER BY created_at DESC`;
+      // Admin view gets all messages, public view only gets approved ones
+      const query = adminView
+        ? `SELECT * FROM guest_messages ORDER BY created_at DESC`
+        : `SELECT * FROM guest_messages WHERE approved = 1 ORDER BY created_at DESC`;
+        
       const messages = sqlite.prepare(query).all() as any[];
       
       if (!messages || messages.length === 0) {
