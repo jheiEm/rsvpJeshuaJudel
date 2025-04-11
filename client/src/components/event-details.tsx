@@ -34,11 +34,11 @@ const EventDetails = () => {
       // Clear the map container in case it was initialized before
       mapRef.current.innerHTML = "";
 
-      // Exact coordinates for the correct addresses
-      // St Therese Church - St. Therese of the Child Jesus and the Holy Face Parish Church, Lipa City
-      // Mountain Rock Resort - Santo Tomas - Lipa Rd, Lipa, Batangas
-      const ceremonyCoords = [13.9445, 121.1621]; // St. Therese Church - more precise coordinates
-      const receptionCoords = [13.9388, 121.1590]; // Mountain Rock Resort - more precise coordinates
+      // Exact coordinates for the correct addresses using Plus Codes
+      // St Therese Church - X5CW+88P, Santo Tomas-Lipa Rd, Lipa, 4217 Batangas
+      // Mountain Rock Resort - X6G4+J47, Santo Tomas - Lipa Rd, Lipa, Batangas
+      const ceremonyCoords = [13.9427, 121.1630]; // St. Therese Church (X5CW+88P)
+      const receptionCoords = [13.9380, 121.1600]; // Mountain Rock Resort (X6G4+J47)
 
       // Initialize map centered between the two locations
       map = window.L.map(mapRef.current).setView(
@@ -93,8 +93,8 @@ const EventDetails = () => {
           <div class="text-center">
             <h3 class="font-bold text-[#6b0f2b] mb-2">Ceremony</h3>
             <p>St. Therese of the Child Jesus and<br>the Holy Face Parish Church</p>
-            <p class="text-xs text-gray-500 mt-1">Santo Tomas-Lipa Rd<br>Brgy. Talisay, Lipa City, Batangas</p>
-            <a href="https://maps.google.com/?q=13.9445,121.1621" target="_blank" class="block mt-2 text-blue-500 text-sm">Open in Google Maps</a>
+            <p class="text-xs text-gray-500 mt-1">X5CW+88P, Santo Tomas-Lipa Rd<br>Lipa, 4217 Batangas</p>
+            <a href="https://maps.google.com/?q=13.9427,121.1630" target="_blank" class="block mt-2 text-blue-500 text-sm">Open in Google Maps</a>
           </div>
         `,
           { maxWidth: 220 },
@@ -110,8 +110,8 @@ const EventDetails = () => {
           <div class="text-center">
             <h3 class="font-bold text-[#6b0f2b] mb-2">Reception</h3>
             <p>Mountain Rock Resort</p>
-            <p class="text-xs text-gray-500 mt-1">Santo Tomas - Lipa Rd<br>Brgy. Talisay, Lipa City, Batangas</p>
-            <a href="https://maps.google.com/?q=13.9388,121.1590" target="_blank" class="block mt-2 text-blue-500 text-sm">Open in Google Maps</a>
+            <p class="text-xs text-gray-500 mt-1">X6G4+J47, Santo Tomas - Lipa Rd<br>Lipa, Batangas</p>
+            <a href="https://maps.google.com/?q=13.9380,121.1600" target="_blank" class="block mt-2 text-blue-500 text-sm">Open in Google Maps</a>
           </div>
         `,
           { maxWidth: 220 },
@@ -406,7 +406,7 @@ const EventDetails = () => {
 
               <div className="mt-8 flex justify-center">
                 <a
-                  href="https://www.google.com/maps/dir/13.9445,121.1621/13.9388,121.1590"
+                  href="https://www.google.com/maps/dir/13.9427,121.1630/13.9380,121.1600"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="bg-[#6b0f2b] hover:bg-[#890f32] text-white py-2 px-4 rounded-md flex items-center gap-2 transition-all duration-300"
