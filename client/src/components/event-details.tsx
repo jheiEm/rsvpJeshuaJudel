@@ -406,7 +406,7 @@ const EventDetails = () => {
 
               <div className="mt-8 flex justify-center">
                 <a
-                  href="https://www.google.com/maps/dir/13.9427,121.1630/13.9380,121.1600"
+                  href="https://www.google.com/maps/dir/13.9445,121.1621/13.9388,121.1590"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="bg-[#6b0f2b] hover:bg-[#890f32] text-white py-2 px-4 rounded-md flex items-center gap-2 transition-all duration-300"
