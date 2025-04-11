@@ -13,6 +13,7 @@ interface MusicTrack {
   filePath: string;
   isActive: boolean;
   uploadedAt: string;
+  isYoutubeLink?: boolean;
 }
 
 interface MusicPlayerProps {
@@ -25,6 +26,8 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({ musicUrl }) => {
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const youtubePlayerRef = useRef<HTMLIFrameElement | null>(null);
+  const [isYoutubeTrack, setIsYoutubeTrack] = useState(false);
   
   // Fetch the active music track from the server
   const { data: activeTrack, isLoading, error } = useQuery<MusicTrack>({
@@ -34,13 +37,27 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({ musicUrl }) => {
     refetchOnWindowFocus: false
   });
 
-  // Determine which music URL to use
+  // Determine which music URL to use and if it's a YouTube link
   const trackUrl = activeTrack?.filePath || musicUrl || DEFAULT_MUSIC_URL;
   const trackInfo = activeTrack ? `${activeTrack.title}${activeTrack.artist ? ` - ${activeTrack.artist}` : ''}` : 'Wedding Music';
+  
+  // Set YouTube flag based on active track
+  useEffect(() => {
+    if (activeTrack) {
+      setIsYoutubeTrack(!!activeTrack.isYoutubeLink);
+    } else {
+      setIsYoutubeTrack(false);
+    }
+  }, [activeTrack]);
 
   // Initialize audio element on mount or when track changes
   useEffect(() => {
     setIsMounted(true);
+    
+    // Skip audio initialization if this is a YouTube track
+    if (isYoutubeTrack) {
+      return;
+    }
     
     if (typeof window !== 'undefined') {
       // Create a new audio element with the track URL
@@ -77,7 +94,31 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({ musicUrl }) => {
         }
       };
     }
-  }, [trackUrl]);
+  }, [trackUrl, isYoutubeTrack]);
+  
+  // Handle YouTube iframe when a YouTube track is active
+  useEffect(() => {
+    if (!isYoutubeTrack || !activeTrack) {
+      return;
+    }
+    
+    // Here we would implement YouTube iframe API integration
+    // For now, we'll use a simplified approach just to demonstrate the concept
+    
+    const youtubeId = extractYoutubeId(trackUrl);
+    console.log('YouTube track active with ID:', youtubeId);
+    
+    // In a full implementation, we would load the YouTube iframe API
+    // and use it to control playback based on the isPlaying state
+    
+  }, [isYoutubeTrack, activeTrack, trackUrl, isPlaying]);
+  
+  // Helper to extract YouTube video ID from URL
+  const extractYoutubeId = (url: string): string | null => {
+    const regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
+    const match = url.match(regExp);
+    return (match && match[7].length === 11) ? match[7] : null;
+  };
 
   // Update progress for the player UI
   const updateProgress = () => {
@@ -86,9 +127,10 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({ musicUrl }) => {
     }
   };
 
-  // Handle play/pause state
+  // Handle play/pause state for audio tracks
   useEffect(() => {
-    if (!audioRef.current) return;
+    // Skip this effect if we're using a YouTube track
+    if (isYoutubeTrack || !audioRef.current) return;
     
     if (isPlaying) {
       const playPromise = audioRef.current.play();
@@ -103,7 +145,7 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({ musicUrl }) => {
     } else {
       audioRef.current.pause();
     }
-  }, [isPlaying]);
+  }, [isPlaying, isYoutubeTrack]);
 
   // Save music preference in localStorage
   useEffect(() => {
@@ -129,6 +171,17 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({ musicUrl }) => {
   
   // Restart the track from the beginning
   const restartTrack = () => {
+    if (isYoutubeTrack) {
+      // YouTube restart logic would go here when fully implemented
+      // Would use the YouTube iframe API to seek to the beginning
+      console.log('Restarting YouTube track');
+      
+      if (!isPlaying) {
+        setIsPlaying(true);
+      }
+      return;
+    }
+    
     if (audioRef.current) {
       audioRef.current.currentTime = 0;
       setCurrentTime(0);

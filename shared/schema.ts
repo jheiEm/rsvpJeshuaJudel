@@ -96,6 +96,7 @@ export const insertMusicTrackSchema = createInsertSchema(musicTracks).pick({
   artist: true,
   filePath: true,
   isActive: true,
+  isYoutubeLink: true,
 });
 
 // Form schema for music track uploads
@@ -104,7 +105,9 @@ export const musicTrackFormSchema = insertMusicTrackSchema.extend({
   artist: z.string().optional(),
   filePath: z.string(), // Required after file upload
   isActive: z.boolean().default(false),
-  musicFile: z.any().optional() // This will represent the uploaded music file
+  isYoutubeLink: z.boolean().default(false),
+  musicFile: z.any().optional(), // This will represent the uploaded music file
+  youtubeUrl: z.string().optional(), // This will be used if it's a YouTube link
 });
 
 export type InsertGuestMessage = z.infer<typeof insertGuestMessageSchema>;
