@@ -51,6 +51,7 @@ sqlite.exec(`
     artist TEXT,
     file_path TEXT NOT NULL,
     is_active INTEGER DEFAULT 0,
+    is_youtube_link INTEGER DEFAULT 0,
     uploaded_at TEXT NOT NULL
   );
 `);
@@ -226,12 +227,13 @@ export class SqliteStorage implements IStorage {
       artist: track.artist || null,
       filePath: track.filePath,
       isActive: track.isActive || false,
+      isYoutubeLink: track.isYoutubeLink || false,
       uploadedAt: uploadedAt.toISOString()
     };
     
     // Use raw SQL to avoid type issues
-    const sql = `INSERT INTO music_tracks (title, artist, file_path, is_active, uploaded_at) 
-                VALUES (?, ?, ?, ?, ?)`;
+    const sql = `INSERT INTO music_tracks (title, artist, file_path, is_active, is_youtube_link, uploaded_at) 
+                VALUES (?, ?, ?, ?, ?, ?)`;
                 
     const stmt = sqlite.prepare(sql);
     const result = stmt.run(
@@ -239,6 +241,7 @@ export class SqliteStorage implements IStorage {
       insertData.artist,
       insertData.filePath,
       insertData.isActive ? 1 : 0,
+      insertData.isYoutubeLink ? 1 : 0,
       insertData.uploadedAt
     );
     
@@ -260,6 +263,7 @@ export class SqliteStorage implements IStorage {
       artist: track.artist,
       filePath: track.file_path,
       isActive: Boolean(track.is_active),
+      isYoutubeLink: Boolean(track.is_youtube_link),
       uploadedAt: new Date(track.uploaded_at)
     }));
   }
@@ -277,6 +281,7 @@ export class SqliteStorage implements IStorage {
       artist: track.artist,
       filePath: track.file_path,
       isActive: true,
+      isYoutubeLink: Boolean(track.is_youtube_link),
       uploadedAt: new Date(track.uploaded_at)
     };
   }
