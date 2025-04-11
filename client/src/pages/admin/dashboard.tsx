@@ -457,9 +457,9 @@ const MusicManagement = () => {
                   <TableCell>
                     <div className="flex items-center">
                       <Switch 
-                        checked={track.isActive} 
+                        checked={track.isActive || false} 
                         onCheckedChange={() => setActiveTrack(track.id)}
-                        disabled={track.isActive}
+                        disabled={track.isActive || false}
                       />
                       <span className="ml-2">
                         {track.isActive ? (

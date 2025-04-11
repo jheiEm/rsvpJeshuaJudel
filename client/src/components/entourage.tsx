@@ -14,14 +14,24 @@ interface EntourageSectionProps {
 }
 
 const EntourageSection = ({ title, left, right }: EntourageSectionProps) => {
-  // Special case handling for the Bridesmaid card
-  const lastIndex = right.length - 1;
-  const bridesmaidCard = right[lastIndex].title === "Bridesmaid" ? right[lastIndex] : null;
+  // Find the Bridesmaid card in the right array
+  const bridesmaidIndex = right.findIndex(item => item.title === "Bridesmaid");
+  const bridesmaidCard = bridesmaidIndex >= 0 ? right[bridesmaidIndex] : null;
   
-  // If we have a bridesmaid card, remove it from the right array to display separately
-  const rightWithoutBridesmaid = bridesmaidCard 
-    ? right.slice(0, lastIndex) 
-    : right;
+  // Find "To Light Our Path" card to move it to the bottom
+  const lightPathIndex = right.findIndex(item => item.title === "To Light Our Path");
+  const lightPathCard = lightPathIndex >= 0 ? right[lightPathIndex] : null;
+  
+  // Create a new filtered right array without the special cards
+  const filteredRight = right.filter(item => 
+    item.title !== "Bridesmaid" && item.title !== "To Light Our Path"
+  );
+  
+  // Add the "To Light Our Path" card to the last position in left
+  const adjustedLeft = [...left];
+  if (lightPathCard) {
+    adjustedLeft.push(lightPathCard);
+  }
   
   return (
     <div className="mb-14 relative">
@@ -46,7 +56,7 @@ const EntourageSection = ({ title, left, right }: EntourageSectionProps) => {
       <div className="grid md:grid-cols-2 gap-10 relative">
         {/* Left column */}
         <div className="space-y-12 relative">
-          {left.map((group, index) => (
+          {adjustedLeft.map((group, index) => (
             <motion.div 
               key={index} 
               className="relative backdrop-blur-sm p-6 rounded-lg bg-gradient-to-b from-white to-[#fef2f4] border-2 border-[#8a1538] shadow-md"
@@ -77,7 +87,7 @@ const EntourageSection = ({ title, left, right }: EntourageSectionProps) => {
         
         {/* Right column */}
         <div className="space-y-12 relative">
-          {rightWithoutBridesmaid.map((group, index) => (
+          {filteredRight.map((group, index) => (
             <motion.div 
               key={index} 
               className="relative backdrop-blur-sm p-6 rounded-lg bg-gradient-to-b from-white to-[#fef2f4] border-2 border-[#8a1538] shadow-md"
