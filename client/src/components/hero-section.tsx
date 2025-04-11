@@ -1,7 +1,7 @@
-import { ChevronDown, Play, Pause } from "lucide-react";
-import { motion } from "framer-motion";
+import { ChevronDown, Play, Pause, ChevronUp } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 
 // Define burgundy color palette
 const BURGUNDY = {
@@ -16,35 +16,125 @@ const BURGUNDY = {
 interface AutoScrollProps {
   isAutoScrolling: boolean;
   toggleAutoScroll: () => void;
+  scrollProgress: number;
+  sectionTitles: string[];
+  currentSectionIndex: number;
 }
 
-const AutoScrollButton = ({ isAutoScrolling, toggleAutoScroll }: AutoScrollProps) => {
+const AutoScrollButton = ({ 
+  isAutoScrolling, 
+  toggleAutoScroll,
+  scrollProgress,
+  sectionTitles,
+  currentSectionIndex
+}: AutoScrollProps) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+
   return (
-    <motion.button
-      onClick={toggleAutoScroll}
-      className={`fixed bottom-24 right-6 z-50 p-3 rounded-full flex items-center justify-center ${
-        isAutoScrolling ? 'bg-white text-[#6b0f2b]' : 'bg-[#6b0f2b] text-white'
-      } shadow-lg`}
-      whileHover={{ scale: 1.1 }}
-      whileTap={{ scale: 0.9 }}
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.3 }}
-    >
-      {isAutoScrolling ? <Pause className="h-5 w-5" /> : <Play className="h-5 w-5" />}
-    </motion.button>
+    <div className="fixed bottom-8 right-8 z-50 flex flex-col items-end space-y-2">
+      {/* Progress indicator */}
+      <motion.div 
+        className="relative rounded-lg p-4 bg-white/85 backdrop-blur-sm shadow-lg max-w-xs overflow-hidden"
+        initial={{ opacity: 0, height: 0, width: 0 }}
+        animate={{ 
+          opacity: isExpanded ? 1 : 0, 
+          height: isExpanded ? 'auto' : 0,
+          width: isExpanded ? 250 : 0,
+        }}
+        transition={{ duration: 0.3 }}
+      >
+        <div className="mb-2 text-[#6b0f2b] font-semibold text-sm">
+          {currentSectionIndex >= 0 && currentSectionIndex < sectionTitles.length ? (
+            <span>Now viewing: {sectionTitles[currentSectionIndex]}</span>
+          ) : (
+            <span>Wedding Tour</span>
+          )}
+        </div>
+        <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+          <motion.div 
+            className="h-full bg-gradient-to-r from-[#6b0f2b] to-[#b52548]"
+            initial={{ width: '0%' }}
+            animate={{ width: `${scrollProgress}%` }}
+            transition={{ duration: 0.3 }}
+          />
+        </div>
+        <div className="mt-3 space-y-2 max-h-32 overflow-y-auto pr-2">
+          {sectionTitles.map((title, index) => (
+            <div 
+              key={index}
+              className={`text-xs py-1 px-2 rounded flex items-center transition-colors ${
+                index === currentSectionIndex
+                  ? 'bg-[#f8e7eb] text-[#6b0f2b] font-medium'
+                  : 'text-gray-500'
+              }`}
+            >
+              <div className={`w-2 h-2 rounded-full mr-2 ${
+                index === currentSectionIndex ? 'bg-[#6b0f2b]' : 'bg-gray-300'
+              }`}></div>
+              {title}
+            </div>
+          ))}
+        </div>
+      </motion.div>
+      
+      {/* Toggle expansion button */}
+      <motion.button
+        onClick={() => setIsExpanded(!isExpanded)}
+        className="bg-white text-[#6b0f2b] p-2 rounded-full shadow-lg"
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.9 }}
+      >
+        {isExpanded ? (
+          <ChevronDown className="h-4 w-4" />
+        ) : (
+          <ChevronUp className="h-4 w-4" />
+        )}
+      </motion.button>
+      
+      {/* Play/Pause button */}
+      <motion.button
+        onClick={toggleAutoScroll}
+        className={`p-4 rounded-full flex items-center justify-center shadow-lg ${
+          isAutoScrolling ? 'bg-white text-[#6b0f2b]' : 'bg-[#6b0f2b] text-white'
+        }`}
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.9 }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.3 }}
+      >
+        {isAutoScrolling ? <Pause className="h-6 w-6" /> : <Play className="h-6 w-6" />}
+      </motion.button>
+    </div>
   );
 };
 
+// Define the sections we want to scroll through
+const SECTIONS = [
+  { id: "home", title: "Home" },
+  { id: "countdown", title: "Countdown" },
+  { id: "story", title: "Our Story" },
+  { id: "event-details", title: "Event Details" },
+  { id: "schedule", title: "Schedule" },
+  { id: "entourage", title: "Wedding Party" },
+  { id: "gallery", title: "Gallery" },
+  { id: "rsvp", title: "RSVP" },
+  { id: "message-board", title: "Guest Messages" },
+  { id: "contact", title: "Contact" }
+];
+
 const HeroSection = () => {
   const [isAutoScrolling, setIsAutoScrolling] = useState(false);
-  const [currentScrollPosition, setCurrentScrollPosition] = useState(0);
-  const [scrollInterval, setScrollInterval] = useState<NodeJS.Timeout | null>(null);
+  const [scrollProgress, setScrollProgress] = useState(0);
+  const [currentSectionIndex, setCurrentSectionIndex] = useState(0);
+  const [targetSection, setTargetSection] = useState<string | null>(null);
+  const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const sectionRefs = useRef<{[key: string]: HTMLElement | null}>({});
 
-  // Auto-scroll function
-  const autoScroll = useCallback(() => {
-    if (isAutoScrolling) {
-      // Get document height
+  // Monitor scroll position to update progress
+  useEffect(() => {
+    const updateScrollProgress = () => {
+      const windowHeight = window.innerHeight;
       const documentHeight = Math.max(
         document.body.scrollHeight, 
         document.body.offsetHeight,
@@ -53,53 +143,116 @@ const HeroSection = () => {
         document.documentElement.offsetHeight
       );
       
-      // Calculate new position (scroll 1px every 15ms for smooth scrolling)
-      const newPosition = window.scrollY + 1;
+      const scrolled = window.scrollY;
+      const maxScroll = documentHeight - windowHeight;
+      const progress = (scrolled / maxScroll) * 100;
       
-      // If we've reached the bottom, stop auto-scrolling
-      if (newPosition >= documentHeight - window.innerHeight) {
+      setScrollProgress(Math.min(Math.max(progress, 0), 100));
+      
+      // Update current section based on scroll position
+      SECTIONS.forEach((section, index) => {
+        const el = document.getElementById(section.id);
+        if (el) {
+          sectionRefs.current[section.id] = el;
+          
+          // Get the element's position relative to the viewport
+          const rect = el.getBoundingClientRect();
+          
+          // If the element is in view (with some buffer for transitions)
+          if (rect.top <= windowHeight * 0.3 && rect.bottom >= 0) {
+            setCurrentSectionIndex(index);
+          }
+        }
+      });
+    };
+    
+    window.addEventListener('scroll', updateScrollProgress);
+    return () => window.removeEventListener('scroll', updateScrollProgress);
+  }, []);
+
+  // Smooth section scroll function
+  const scrollToSection = useCallback((sectionId: string) => {
+    const section = document.getElementById(sectionId);
+    if (section) {
+      window.scrollTo({
+        top: section.offsetTop,
+        behavior: 'smooth'
+      });
+    }
+  }, []);
+
+  // Auto-scroll function with section-by-section navigation
+  const startAutoScroll = useCallback(() => {
+    if (isAutoScrolling) {
+      let nextIndex = currentSectionIndex;
+      if (currentSectionIndex < SECTIONS.length - 1) {
+        nextIndex = currentSectionIndex + 1;
+      } else {
+        // We've reached the end, stop auto-scrolling
         setIsAutoScrolling(false);
-        if (scrollInterval) clearInterval(scrollInterval);
         return;
       }
       
-      // Scroll to new position
-      window.scrollTo({
-        top: newPosition,
-        behavior: "auto" // Using auto for smoother continuous scrolling
-      });
+      // Set the target section for scrolling
+      const targetSectionId = SECTIONS[nextIndex].id;
+      setTargetSection(targetSectionId);
       
-      // Save current position
-      setCurrentScrollPosition(newPosition);
+      // Scroll to that section
+      scrollToSection(targetSectionId);
+      
+      // Set a timeout for the next scroll action, allowing time for animation
+      if (scrollTimeoutRef.current) {
+        clearTimeout(scrollTimeoutRef.current);
+      }
+      
+      scrollTimeoutRef.current = setTimeout(() => {
+        startAutoScroll();
+      }, 5000); // Wait 5 seconds at each section
     }
-  }, [isAutoScrolling, scrollInterval]);
+  }, [isAutoScrolling, currentSectionIndex, scrollToSection]);
 
+  // Toggle auto-scrolling
   const toggleAutoScroll = useCallback(() => {
-    setIsAutoScrolling(prev => !prev);
+    setIsAutoScrolling(prev => {
+      if (!prev) {
+        // If we're starting auto-scroll, begin from the current section
+        return true;
+      } else {
+        // If we're stopping, clear any pending timeouts
+        if (scrollTimeoutRef.current) {
+          clearTimeout(scrollTimeoutRef.current);
+          scrollTimeoutRef.current = null;
+        }
+        return false;
+      }
+    });
   }, []);
 
-  // Set up or clear the auto-scroll interval based on isAutoScrolling
+  // Start or stop auto-scrolling based on state
   useEffect(() => {
     if (isAutoScrolling) {
-      const interval = setInterval(autoScroll, 15); // Adjust timing for speed
-      setScrollInterval(interval);
-    } else {
-      if (scrollInterval) {
-        clearInterval(scrollInterval);
-        setScrollInterval(null);
-      }
+      startAutoScroll();
+    } else if (scrollTimeoutRef.current) {
+      clearTimeout(scrollTimeoutRef.current);
+      scrollTimeoutRef.current = null;
     }
     
     return () => {
-      if (scrollInterval) clearInterval(scrollInterval);
+      if (scrollTimeoutRef.current) {
+        clearTimeout(scrollTimeoutRef.current);
+      }
     };
-  }, [isAutoScrolling, autoScroll, scrollInterval]);
+  }, [isAutoScrolling, startAutoScroll]);
 
   // Add event listeners to pause auto-scroll when user interacts
   useEffect(() => {
     const pauseOnUserInteraction = () => {
       if (isAutoScrolling) {
         setIsAutoScrolling(false);
+        if (scrollTimeoutRef.current) {
+          clearTimeout(scrollTimeoutRef.current);
+          scrollTimeoutRef.current = null;
+        }
       }
     };
     
@@ -219,7 +372,7 @@ const HeroSection = () => {
               whileTap={{ scale: 0.95 }}
               transition={{ duration: 0.2 }}
             >
-              {isAutoScrolling ? "PAUSE TOUR" : "START TOUR"}
+              {isAutoScrolling ? "PAUSE TOUR" : "START PRESENTATION"}
             </motion.button>
           </motion.div>
         </motion.div>
@@ -236,8 +389,44 @@ const HeroSection = () => {
         </motion.div>
       </section>
       
-      {/* Floating auto-scroll button that's always visible */}
-      <AutoScrollButton isAutoScrolling={isAutoScrolling} toggleAutoScroll={toggleAutoScroll} />
+      {/* Floating auto-scroll button and progress indicator */}
+      <AutoScrollButton 
+        isAutoScrolling={isAutoScrolling} 
+        toggleAutoScroll={toggleAutoScroll} 
+        scrollProgress={scrollProgress}
+        sectionTitles={SECTIONS.map(s => s.title)}
+        currentSectionIndex={currentSectionIndex}
+      />
+
+      {/* Section transition animation */}
+      <AnimatePresence>
+        {targetSection && isAutoScrolling && (
+          <motion.div
+            key="section-transition"
+            className="fixed inset-0 z-[60] pointer-events-none"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <div className="absolute inset-0 bg-gradient-to-b from-[#4a0d1f]/10 via-[#6b0f2b]/10 to-[#8a1538]/10 backdrop-blur-sm" />
+            <div className="flex h-full items-center justify-center">
+              <motion.div
+                className="text-white text-center"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.3 }}
+              >
+                <div className="font-['Great_Vibes'] text-4xl mb-2">
+                  {SECTIONS.find(s => s.id === targetSection)?.title}
+                </div>
+                <div className="w-24 h-[2px] mx-auto bg-white opacity-60" />
+              </motion.div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   );
 };
