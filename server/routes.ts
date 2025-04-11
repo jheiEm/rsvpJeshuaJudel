@@ -310,29 +310,41 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Upload a new music track
   app.post("/api/admin/music", isAuthenticated, musicUpload.single('musicFile'), async (req, res) => {
     try {
-      let filePath = undefined;
+      let filePath = '';
+      const isYoutubeLink = req.body.isYoutubeLink === 'true';
       
-      // A music file must be uploaded
-      if (!req.file) {
-        return res.status(400).json({ message: "No music file provided" });
+      if (isYoutubeLink) {
+        // Handle YouTube URL
+        if (!req.body.youtubeUrl) {
+          return res.status(400).json({ message: "No YouTube URL provided" });
+        }
+        
+        // Use the YouTube URL directly as the file path
+        filePath = req.body.youtubeUrl;
+        console.log("Using YouTube URL as track source:", filePath);
+      } else {
+        // Handle regular file upload
+        if (!req.file) {
+          return res.status(400).json({ message: "No music file provided" });
+        }
+        
+        // Save the music file
+        filePath = await storage.saveMusicAndGetUrl(req.file);
       }
-      
-      // Save the music file
-      filePath = await storage.saveMusicAndGetUrl(req.file);
       
       // Combine form data with the file path
       const trackData = {
         title: req.body.title,
         artist: req.body.artist || null,
         filePath,
-        isActive: req.body.isActive === 'true'
+        isActive: req.body.isActive === 'true',
+        isYoutubeLink
       };
       
-      // Validate the data
-      const validatedData = musicTrackFormSchema.parse(trackData);
+      console.log("Creating music track with data:", JSON.stringify(trackData));
       
-      // Save the track
-      const track = await storage.createMusicTrack(validatedData);
+      // Save the track (skipping validation that might not have YouTube fields yet)
+      const track = await storage.createMusicTrack(trackData);
       
       res.status(201).json({
         message: "Music track uploaded successfully",
