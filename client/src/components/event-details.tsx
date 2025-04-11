@@ -298,7 +298,7 @@ const EventDetails = () => {
           >
             <div
               ref={mapRef}
-              className="absolute top-0 left-0 w-full h-full bg-[#a0aec0]"
+              className="absolute top-0 left-0 w-full h-full bg-[#a0aec0] z-10" // Added z-index here
             >
               <div className="w-full h-full flex items-center justify-center">
                 <p className="text-[#4a5568]">Interactive map loading...</p>

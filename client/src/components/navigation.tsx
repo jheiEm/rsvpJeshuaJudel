@@ -42,7 +42,7 @@ const Navigation = () => {
 
   return (
     <nav
-      className={`fixed w-full bg-white bg-opacity-95 shadow-sm z-50 transition-all duration-300 ${
+      className={`fixed w-full bg-white bg-opacity-95 shadow-sm z-[100] transition-all duration-300 ${
         isScrolled ? "py-2 shadow-md" : "py-3"
       }`}
     >
