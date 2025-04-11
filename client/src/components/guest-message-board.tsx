@@ -134,13 +134,14 @@ const GuestMessageBoard: React.FC = () => {
   };
 
   return (
-    <div id="messages" className="w-full max-w-4xl mx-auto py-16 px-4 scroll-mt-20">
-      <div className="text-center mb-10">
-        <h2 className="text-3xl font-bold font-['Great_Vibes'] text-[#6b0f2b] text-5xl">Guest Message Board</h2>
-        <p className="text-gray-600 mt-2 font-['Cormorant_Garamond'] text-xl">
-          Leave a message or well wishes for the couple
-        </p>
-      </div>
+    <section id="guest-messages" className="py-20 bg-white">
+      <div className="w-full max-w-4xl mx-auto px-4 scroll-mt-20">
+        <div className="text-center mb-10">
+          <h2 className="text-3xl font-bold font-['Great_Vibes'] text-[#6b0f2b] text-5xl">Guest Message Board</h2>
+          <p className="text-gray-600 mt-2 font-['Cormorant_Garamond'] text-xl">
+            Leave a message or well wishes for the couple
+          </p>
+        </div>
 
       {/* Message Form */}
       <Card className="mb-10 border border-[#6b0f2b]/20 shadow-md">
@@ -277,6 +278,7 @@ const GuestMessageBoard: React.FC = () => {
         )}
       </div>
     </div>
+    </section>
   );
 };
 

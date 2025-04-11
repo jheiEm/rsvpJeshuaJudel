@@ -114,13 +114,13 @@ const SECTIONS = [
   { id: "home", title: "Home" },
   { id: "countdown", title: "Countdown" },
   { id: "story", title: "Our Story" },
-  { id: "event-details", title: "Event Details" },
+  { id: "details", title: "Event Details" },
   { id: "schedule", title: "Schedule" },
   { id: "entourage", title: "Wedding Party" },
   { id: "gallery", title: "Gallery" },
   { id: "rsvp", title: "RSVP" },
-  { id: "message-board", title: "Guest Messages" },
-  { id: "contact", title: "Contact" }
+  { id: "guest-messages", title: "Guest Messages" },
+  { id: "contact-us", title: "Contact" }
 ];
 
 const HeroSection = () => {
