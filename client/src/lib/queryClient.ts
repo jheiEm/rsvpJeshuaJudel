@@ -11,11 +11,19 @@ export async function apiRequest(
   method: string,
   url: string,
   data?: unknown | undefined,
+  options?: {
+    skipJSON?: boolean; // Flag to skip JSON.stringify for FormData
+  }
 ): Promise<Response> {
+  const isFormData = data instanceof FormData;
+  const opts = options || {};
+  
   const res = await fetch(url, {
     method,
-    headers: data ? { "Content-Type": "application/json" } : {},
-    body: data ? JSON.stringify(data) : undefined,
+    // Don't set Content-Type for FormData (browser will set it with boundary)
+    headers: data && !isFormData ? { "Content-Type": "application/json" } : {},
+    // If it's FormData, pass it directly; otherwise stringify JSON
+    body: data ? (isFormData ? data : JSON.stringify(data)) : undefined,
     credentials: "include",
   });
 

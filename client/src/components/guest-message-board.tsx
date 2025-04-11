@@ -70,11 +70,11 @@ const GuestMessageBoard: React.FC = () => {
         formData.append('photo', selectedFile);
       }
       
-      return apiRequest('/api/guest-messages', {
-        method: 'POST',
-        body: formData,
-        skipJSON: true,
-      });
+      return apiRequest(
+        'POST',
+        '/api/guest-messages',
+        formData,
+      );
     },
     onSuccess: () => {
       toast({
