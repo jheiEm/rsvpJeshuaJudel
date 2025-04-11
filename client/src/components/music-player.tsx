@@ -185,15 +185,34 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({ musicUrl }) => {
     }
   }, [isPlaying, isMounted]);
 
-  // Load music preference from localStorage on mount
+  // Load music and autoplay preferences from localStorage on mount
   useEffect(() => {
     if (typeof window !== 'undefined') {
+      // Check if this is first visit
+      const isFirstVisit = !localStorage.getItem('wedding-visited');
+      const autoplayPreference = localStorage.getItem('wedding-music-autoplay');
       const savedPreference = localStorage.getItem('wedding-music-enabled');
-      if (savedPreference !== null) {
+
+      if (isFirstVisit) {
+        // First visit - mark as visited
+        localStorage.setItem('wedding-visited', 'true');
+        localStorage.setItem('wedding-music-autoplay', 'false');
+      } else if (autoplayPreference === 'true') {
+        // Not first visit and autoplay is enabled
+        setIsPlaying(true);
+      } else if (savedPreference !== null) {
+        // Use last playing state
         setIsPlaying(JSON.parse(savedPreference));
       }
     }
   }, []);
+
+  // Save autoplay preference when music is toggled
+  const toggleMusic = () => {
+    const newState = !isPlaying;
+    setIsPlaying(newState);
+    localStorage.setItem('wedding-music-autoplay', newState.toString());
+  };
 
   // Toggle music play/pause
   const toggleMusic = () => {
