@@ -248,30 +248,34 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({ musicUrl }) => {
     
     console.log("Creating YouTube player with video ID:", youtubeId);
     
-    // Create hidden container for YouTube iframe if it doesn't exist
+    // Create YouTube player container if it doesn't exist
     if (!document.getElementById('youtube-player-container')) {
       const container = document.createElement('div');
       container.id = 'youtube-player-container';
-      container.style.position = 'absolute';
+      container.style.position = 'fixed';
       container.style.bottom = '0';
       container.style.right = '0'; 
       container.style.width = '1px';
       container.style.height = '1px';
       container.style.visibility = 'hidden';
+      container.style.pointerEvents = 'none';
+      container.style.zIndex = '-1';
       document.body.appendChild(container);
     }
     
-    // Create YouTube player
-    if (typeof window.YT !== 'undefined' && window.YT.Player) {
+    // Wait for YouTube API to be ready
+    const createYouTubePlayer = () => {
       // Destroy previous player if exists
       if (youtubePlayerRef.current) {
         try {
           youtubePlayerRef.current.destroy();
+          youtubePlayerRef.current = null;
         } catch (e) {
           console.error('Error destroying previous YouTube player:', e);
         }
       }
       
+      // Create new player
       youtubePlayerRef.current = new window.YT.Player('youtube-player-container', {
         videoId: youtubeId,
         playerVars: {
@@ -281,7 +285,9 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({ musicUrl }) => {
           fs: 0,
           modestbranding: 1,
           iv_load_policy: 3,
-          rel: 0
+          rel: 0,
+          loop: 1,
+          playlist: youtubeId // Required for looping
         },
         events: {
           onReady: (event: any) => {
@@ -301,30 +307,59 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({ musicUrl }) => {
           onStateChange: (event: any) => {
             console.log('YouTube player state changed:', event.data);
             
-            // State 1 is playing, 2 is paused
-            if (event.data === 1 && !isPlaying) {
+            // YouTube state constants: -1 (unstarted), 0 (ended), 1 (playing), 2 (paused), 3 (buffering), 5 (video cued)
+            if (event.data === window.YT.PlayerState.PLAYING && !isPlaying) {
               setIsPlaying(true);
-            } else if (event.data === 2 && isPlaying) {
+            } else if (event.data === window.YT.PlayerState.PAUSED && isPlaying) {
               setIsPlaying(false);
+            } else if (event.data === window.YT.PlayerState.ENDED) {
+              // Restart video when it ends (loop)
+              event.target.seekTo(0);
+              event.target.playVideo();
             }
             
-            // Update currentTime for progress bar
-            if (event.data === 1) { // Playing
-              const updateYoutubeProgress = () => {
-                if (youtubePlayerRef.current && youtubePlayerRef.current.getCurrentTime) {
+            // Setup progress tracking
+            if (event.data === window.YT.PlayerState.PLAYING) {
+              // Track progress every second
+              const progressInterval = setInterval(() => {
+                if (youtubePlayerRef.current && typeof youtubePlayerRef.current.getCurrentTime === 'function') {
                   setCurrentTime(youtubePlayerRef.current.getCurrentTime());
+                } else {
+                  clearInterval(progressInterval);
                 }
-              };
+              }, 1000);
               
-              // Update every second
-              const intervalId = setInterval(updateYoutubeProgress, 1000);
-              return () => clearInterval(intervalId);
+              // Clear interval on unmount
+              return () => clearInterval(progressInterval);
             }
+          },
+          onError: (event: any) => {
+            console.error('YouTube player error:', event.data);
           }
         }
       });
+    };
+    
+    // Create player when YouTube API is ready
+    if (typeof window.YT !== 'undefined' && window.YT.Player) {
+      createYouTubePlayer();
     } else {
-      console.error("YouTube API not loaded yet");
+      console.log("Waiting for YouTube API to load...");
+      // Check every 500ms if the API is ready
+      const checkYouTubeInterval = setInterval(() => {
+        if (typeof window.YT !== 'undefined' && window.YT.Player) {
+          clearInterval(checkYouTubeInterval);
+          createYouTubePlayer();
+        }
+      }, 500);
+      
+      // Clear interval after 10 seconds if API still not loaded (prevent memory leaks)
+      setTimeout(() => {
+        clearInterval(checkYouTubeInterval);
+        if (!youtubePlayerRef.current) {
+          console.error("YouTube API failed to load after timeout");
+        }
+      }, 10000);
     }
     
     return () => {
