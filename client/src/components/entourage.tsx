@@ -14,24 +14,22 @@ interface EntourageSectionProps {
 }
 
 const EntourageSection = ({ title, left, right }: EntourageSectionProps) => {
-  // Find the Bridesmaid card in the right array
+  // Find the Bridesmaid card and To Light Our Path card in the arrays
   const bridesmaidIndex = right.findIndex(item => item.title === "Bridesmaid");
   const bridesmaidCard = bridesmaidIndex >= 0 ? right[bridesmaidIndex] : null;
   
-  // Find the Bridesmaid card to display separately
-  // We'll leave the "To Light Our Path" card in its original position in the right column
+  const lightPathIndex = left.findIndex(item => item.title === "To Light Our Path");
+  const lightPathCard = lightPathIndex >= 0 ? left[lightPathIndex] : null;
+  
+  // Filter out the cards we'll display separately
   const filteredRight = right.filter(item => 
     item.title !== "Bridesmaid"
   );
   
-  // Create balanced columns that look good visually
-  const adjustedLeft = [...left];
-  
-  // Only add "To Light Our Path" if it should be in the left column
-  // We're moving it back to right column based on user feedback
-  // if (lightPathCard) {
-  //   adjustedLeft.push(lightPathCard);
-  // }
+  // Filter out the To Light Our Path card from left column
+  const filteredLeft = left.filter(item => 
+    item.title !== "To Light Our Path"
+  );
   
   return (
     <div className="mb-14 relative">
@@ -56,7 +54,7 @@ const EntourageSection = ({ title, left, right }: EntourageSectionProps) => {
       <div className="grid md:grid-cols-2 gap-10 relative">
         {/* Left column */}
         <div className="space-y-12 relative">
-          {adjustedLeft.map((group, index) => (
+          {filteredLeft.map((group: EntourageGroup, index: number) => (
             <motion.div 
               key={index} 
               className="relative backdrop-blur-sm p-6 rounded-lg bg-gradient-to-b from-white to-[#fef2f4] border-2 border-[#8a1538] shadow-md"
@@ -127,6 +125,41 @@ const EntourageSection = ({ title, left, right }: EntourageSectionProps) => {
         </div>
       </div>
       
+      {/* Centered To Light Our Path card */}
+      {lightPathCard && (
+        <div className="mt-12 max-w-md mx-auto">
+          <motion.div 
+            className="relative backdrop-blur-sm p-6 rounded-lg bg-gradient-to-b from-white to-[#fef2f4] border-2 border-[#8a1538] shadow-md"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            whileHover={{ 
+              y: -5, 
+              scale: 1.02,
+              boxShadow: "0 10px 25px -5px rgba(107, 15, 43, 0.2), 0 8px 10px -6px rgba(107, 15, 43, 0.1)" 
+            }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+            viewport={{ once: true }}
+          >
+            {lightPathCard.icon && (
+              <div className="mb-2">
+                {lightPathCard.icon}
+              </div>
+            )}
+            <h4 className="font-['Cormorant_Garamond'] text-xl uppercase tracking-wider text-center mb-4 pb-2 text-[#6b0f2b] font-semibold border-b-2 border-[#8a1538]">
+              {lightPathCard.title}
+            </h4>
+            <ul className="text-center space-y-2">
+              {lightPathCard.members.map((member: string, i: number) => (
+                <li key={i} className="font-['Cormorant_Garamond'] tracking-wide text-[#4a5568] font-medium">{member}</li>
+              ))}
+            </ul>
+            {lightPathCard.description && (
+              <p className="mt-4 text-[#6b0f2b]/70 text-sm italic text-center">{lightPathCard.description}</p>
+            )}
+          </motion.div>
+        </div>
+      )}
+      
       {/* Centered Bridesmaid card */}
       {bridesmaidCard && (
         <div className="mt-12 max-w-md mx-auto">
@@ -151,7 +184,7 @@ const EntourageSection = ({ title, left, right }: EntourageSectionProps) => {
               {bridesmaidCard.title}
             </h4>
             <ul className="text-center space-y-2">
-              {bridesmaidCard.members.map((member, i) => (
+              {bridesmaidCard.members.map((member: string, i: number) => (
                 <li key={i} className="font-['Cormorant_Garamond'] tracking-wide text-[#4a5568] font-medium">{member}</li>
               ))}
             </ul>
