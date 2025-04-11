@@ -14,6 +14,15 @@ interface EntourageSectionProps {
 }
 
 const EntourageSection = ({ title, left, right }: EntourageSectionProps) => {
+  // Special case handling for the Bridesmaid card
+  const lastIndex = right.length - 1;
+  const bridesmaidCard = right[lastIndex].title === "Bridesmaid" ? right[lastIndex] : null;
+  
+  // If we have a bridesmaid card, remove it from the right array to display separately
+  const rightWithoutBridesmaid = bridesmaidCard 
+    ? right.slice(0, lastIndex) 
+    : right;
+  
   return (
     <div className="mb-14 relative">
       {/* Decorative elements */}
@@ -68,7 +77,7 @@ const EntourageSection = ({ title, left, right }: EntourageSectionProps) => {
         
         {/* Right column */}
         <div className="space-y-12 relative">
-          {right.map((group, index) => (
+          {rightWithoutBridesmaid.map((group, index) => (
             <motion.div 
               key={index} 
               className="relative backdrop-blur-sm p-6 rounded-lg bg-gradient-to-b from-white to-[#fef2f4] border-2 border-[#8a1538] shadow-md"
@@ -97,6 +106,36 @@ const EntourageSection = ({ title, left, right }: EntourageSectionProps) => {
           ))}
         </div>
       </div>
+      
+      {/* Centered Bridesmaid card */}
+      {bridesmaidCard && (
+        <div className="mt-12 max-w-md mx-auto">
+          <motion.div 
+            className="relative backdrop-blur-sm p-6 rounded-lg bg-gradient-to-b from-white to-[#fef2f4] border-2 border-[#8a1538] shadow-md"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.5 }}
+            viewport={{ once: true }}
+          >
+            {bridesmaidCard.icon && (
+              <div className="mb-2">
+                {bridesmaidCard.icon}
+              </div>
+            )}
+            <h4 className="font-['Cormorant_Garamond'] text-xl uppercase tracking-wider text-center mb-4 pb-2 text-[#6b0f2b] font-semibold border-b-2 border-[#8a1538]">
+              {bridesmaidCard.title}
+            </h4>
+            <ul className="text-center space-y-2">
+              {bridesmaidCard.members.map((member, i) => (
+                <li key={i} className="font-['Cormorant_Garamond'] tracking-wide text-[#4a5568] font-medium">{member}</li>
+              ))}
+            </ul>
+            {bridesmaidCard.description && (
+              <p className="mt-4 text-[#6b0f2b]/70 text-sm italic text-center">{bridesmaidCard.description}</p>
+            )}
+          </motion.div>
+        </div>
+      )}
     </div>
   );
 };

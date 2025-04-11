@@ -292,8 +292,8 @@ const EventDetails = () => {
             directions from the church to the reception.
           </p>
 
-          <div className="aspect-video h-80 rounded-lg overflow-hidden shadow-lg mb-8">
-            <div ref={mapRef} className="w-full h-full bg-[#a0aec0]">
+          <div className="relative w-full overflow-hidden rounded-lg shadow-lg mb-8" style={{ paddingBottom: '56.25%' }}>
+            <div ref={mapRef} className="absolute top-0 left-0 w-full h-full bg-[#a0aec0]">
               <div className="w-full h-full flex items-center justify-center">
                 <p className="text-[#4a5568]">Interactive map loading...</p>
               </div>

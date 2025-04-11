@@ -38,6 +38,7 @@ export const musicTracks = pgTable("music_tracks", {
   filePath: text("file_path").notNull(),
   isActive: boolean("is_active").default(false),
   uploadedAt: timestamp("uploaded_at").defaultNow().notNull(),
+  isYoutubeLink: boolean("is_youtube_link").default(false),
 });
 
 export const insertUserSchema = createInsertSchema(users).pick({
