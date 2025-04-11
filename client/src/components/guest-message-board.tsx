@@ -124,8 +124,8 @@ const GuestMessageBoard: React.FC = () => {
   };
 
   return (
-    <section id="guest-messages" className="py-20 bg-white">
-      <div className="w-full max-w-4xl mx-auto px-4 scroll-mt-20">
+    <section id="messages" className="py-20 bg-white scroll-mt-20">
+      <div className="w-full max-w-4xl mx-auto px-4">
         <div className="text-center mb-10">
           <h2 className="text-3xl font-bold font-['Great_Vibes'] text-[#6b0f2b] text-5xl">Guest Message Board</h2>
           <p className="text-gray-600 mt-2 font-['Cormorant_Garamond'] text-xl">
@@ -233,34 +233,40 @@ const GuestMessageBoard: React.FC = () => {
               Failed to load messages. Please try again later.
             </div>
           ) : messages && messages.length > 0 ? (
-            <div className="grid grid-cols-1 gap-6">
-              {messages.map((message) => (
-                <Card key={message.id} className="overflow-hidden border border-[#6b0f2b]/20 shadow-sm">
-                  <CardHeader className="pb-2 bg-[#6b0f2b]/5">
-                    <div className="flex justify-between items-start">
-                      <CardTitle className="text-xl font-['Cormorant_Garamond'] text-[#6b0f2b]">{message.name}</CardTitle>
-                      <span className="text-xs text-gray-500">
-                        {formatDate(message.createdAt)}
-                      </span>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="pb-4">
-                    <p className="whitespace-pre-line font-['Montserrat'] text-[#2d3748]">{message.message}</p>
-                  </CardContent>
-                  {message.photoUrl && (
-                    <div className="px-6 pb-6">
-                      <div className="aspect-video relative overflow-hidden rounded-md border border-[#6b0f2b]/10">
-                        <img
-                          src={message.photoUrl}
-                          alt={`Photo from ${message.name}`}
-                          className="w-full h-full object-cover"
-                        />
+            <Card className="border border-[#6b0f2b]/20 shadow-md">
+              <CardHeader className="bg-[#6b0f2b]/5">
+                <CardTitle className="text-[#6b0f2b] font-['Cormorant_Garamond']">Guest Messages</CardTitle>
+                <CardDescription className="font-['Cormorant_Garamond'] text-base">
+                  Messages from friends and family
+                </CardDescription>
+              </CardHeader>
+              <div className="max-h-[500px] overflow-y-auto p-4">
+                <div className="space-y-4">
+                  {messages.map((message: GuestMessage) => (
+                    <div key={message.id} className="border-b border-[#6b0f2b]/10 pb-4 last:border-b-0">
+                      <div className="flex justify-between items-start mb-2">
+                        <h4 className="text-lg font-semibold font-['Cormorant_Garamond'] text-[#6b0f2b]">{message.name}</h4>
+                        <span className="text-xs text-gray-500">
+                          {formatDate(message.createdAt)}
+                        </span>
                       </div>
+                      <p className="whitespace-pre-line font-['Montserrat'] text-[#2d3748] mb-3">{message.message}</p>
+                      {message.photoUrl && (
+                        <div className="mt-2">
+                          <div className="aspect-video relative rounded-md border border-[#6b0f2b]/10 overflow-hidden max-h-[200px]">
+                            <img
+                              src={message.photoUrl}
+                              alt={`Photo from ${message.name}`}
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                        </div>
+                      )}
                     </div>
-                  )}
-                </Card>
-              ))}
-            </div>
+                  ))}
+                </div>
+              </div>
+            </Card>
           ) : (
             <div className="text-center py-10 text-gray-500 font-['Cormorant_Garamond'] text-lg">
               No messages yet. Be the first to leave a message!
