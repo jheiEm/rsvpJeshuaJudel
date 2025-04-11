@@ -38,6 +38,7 @@ const GuestMessagesAdminPage = () => {
   const [selectedMessage, setSelectedMessage] = useState<GuestMessage | null>(null);
   const [showDetails, setShowDetails] = useState<boolean>(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState<boolean>(false);
+  const [, setLocation] = useLocation();
 
   // Check authentication status
   useEffect(() => {
@@ -229,8 +230,6 @@ const GuestMessagesAdminPage = () => {
       </div>
     );
   }
-
-  const [, setLocation] = useLocation();
 
   return (
     <div className="container mx-auto p-6">

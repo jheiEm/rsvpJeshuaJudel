@@ -21,7 +21,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Loader2, Trash2, Eye, Edit } from "lucide-react";
+import { Loader2, Trash2, Eye } from "lucide-react";
 
 interface Rsvp {
   id: number;
@@ -55,6 +55,7 @@ const RsvpsAdminPage = () => {
   const [selectedRsvp, setSelectedRsvp] = useState<Rsvp | null>(null);
   const [showDetails, setShowDetails] = useState<boolean>(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState<boolean>(false);
+  const [, setLocation] = useLocation();
 
   // Check authentication status
   useEffect(() => {
@@ -209,8 +210,6 @@ const RsvpsAdminPage = () => {
       </div>
     );
   }
-
-  const [, setLocation] = useLocation();
 
   return (
     <div className="container mx-auto p-6">
