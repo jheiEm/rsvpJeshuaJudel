@@ -40,13 +40,13 @@ const EventDetails = () => {
       const ceremonyCoords = [13.97086751738232, 121.19581652630849]; // St. Therese Church in Lipa City (exact coordinates)
       const receptionCoords = [13.976508916799128, 121.20531269504961]; // Mountain Rock Resort in Lipa City (exact coordinates)
 
-      // Initialize map centered between the two locations
+      // Initialize map centered between the two locations but slightly adjusted for better view
       map = window.L.map(mapRef.current).setView(
         [
           (ceremonyCoords[0] + receptionCoords[0]) / 2,
-          (ceremonyCoords[1] + receptionCoords[1]) / 2,
+          (ceremonyCoords[1] + receptionCoords[1]) / 2 + 0.002, // Slight adjustment for better centering
         ],
-        14,
+        14.5, // Increased zoom level for better visibility
       );
 
       // Add a prettier map tile layer (Mapbox Streets)
@@ -277,7 +277,7 @@ const EventDetails = () => {
 
         {/* Map Section */}
         <motion.div
-          className="mt-16 max-w-4xl mx-auto"
+          className="mt-20 max-w-5xl mx-auto bg-[#fff5f7] p-8 rounded-lg shadow-md border border-[#e8c1c8]"
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.3 }}
