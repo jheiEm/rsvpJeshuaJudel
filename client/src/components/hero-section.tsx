@@ -34,7 +34,7 @@ const AutoScrollButton = ({
     <div className="fixed bottom-8 right-8 z-50 flex flex-col items-end space-y-2">
       {/* Progress indicator */}
       <motion.div 
-        className="relative rounded-lg p-4 bg-white/85 backdrop-blur-sm shadow-lg max-w-xs overflow-hidden"
+        className="relative rounded-lg p-4 bg-white/90 backdrop-blur-sm shadow-lg max-w-xs overflow-hidden"
         initial={{ opacity: 0, height: 0, width: 0 }}
         animate={{ 
           opacity: isExpanded ? 1 : 0, 
@@ -94,8 +94,10 @@ const AutoScrollButton = ({
       {/* Play/Pause button */}
       <motion.button
         onClick={toggleAutoScroll}
-        className={`p-4 rounded-full flex items-center justify-center shadow-lg ${
-          isAutoScrolling ? 'bg-white text-[#6b0f2b]' : 'bg-[#6b0f2b] text-white'
+        className={`p-3 rounded-full flex items-center justify-center shadow-lg border ${
+          isAutoScrolling 
+            ? 'bg-white text-[#6b0f2b] border-[#6b0f2b]' 
+            : 'bg-[#6b0f2b] text-white border-white'
         }`}
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
@@ -103,7 +105,7 @@ const AutoScrollButton = ({
         animate={{ opacity: 1 }}
         transition={{ duration: 0.3 }}
       >
-        {isAutoScrolling ? <Pause className="h-6 w-6" /> : <Play className="h-6 w-6" />}
+        {isAutoScrolling ? <Pause className="h-5 w-5" /> : <Play className="h-5 w-5" />}
       </motion.button>
     </div>
   );
