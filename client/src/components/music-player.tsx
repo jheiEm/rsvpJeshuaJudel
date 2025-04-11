@@ -154,15 +154,15 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({ musicUrl }) => {
     <div className="fixed bottom-4 right-4 z-50 flex flex-col items-end">
       {/* Player controls expand on hover */}
       <div className="relative group">
-        <div className="absolute bottom-full right-0 mb-3 invisible group-hover:visible opacity-0 group-hover:opacity-100 transition-all duration-300 bg-white/95 dark:bg-gray-800/95 rounded-lg shadow-lg p-3 min-w-[250px]">
-          <div className="flex flex-col gap-2">
+        <div className="absolute bottom-full right-0 mb-3 invisible group-hover:visible opacity-0 group-hover:opacity-100 transition-all duration-300 bg-white/95 backdrop-blur-sm rounded-lg shadow-lg p-4 min-w-[280px] border-2 border-[#8a1538]">
+          <div className="flex flex-col gap-3">
             {/* Track info */}
-            <div className="text-sm font-medium text-[#6b0f2b] truncate max-w-[220px]">
+            <div className="text-sm font-medium text-[#6b0f2b] truncate max-w-[250px] text-center">
               {trackInfo}
             </div>
             
             {/* Progress bar */}
-            <div className="w-full bg-gray-200 h-1.5 rounded-full overflow-hidden">
+            <div className="w-full bg-gray-200 h-2 rounded-full overflow-hidden">
               <div 
                 className="bg-[#6b0f2b] h-full transition-all duration-300"
                 style={{ width: `${progressPercentage}%` }}
@@ -179,7 +179,7 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({ musicUrl }) => {
             <div className="flex justify-between items-center mt-1">
               <button
                 onClick={restartTrack}
-                className="text-[#6b0f2b] hover:text-[#6b0f2b]/80 transition-colors"
+                className="text-[#6b0f2b] hover:text-[#6b0f2b]/80 transition-colors p-2"
                 title="Restart"
               >
                 <SkipBack size={20} />
@@ -187,10 +187,10 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({ musicUrl }) => {
               
               <button
                 onClick={toggleMusic}
-                className="bg-[#6b0f2b] text-white rounded-full p-2 hover:bg-[#6b0f2b]/90 transition-colors"
+                className="bg-[#6b0f2b] text-white rounded-full p-3 hover:bg-[#6b0f2b]/90 transition-colors shadow-md"
                 title={isPlaying ? "Pause" : "Play"}
               >
-                {isPlaying ? <Pause size={18} /> : <Play size={18} />}
+                {isPlaying ? <Pause size={20} /> : <Play size={20} className="ml-[2px]" />}
               </button>
               
               <button
@@ -199,7 +199,7 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({ musicUrl }) => {
                     audioRef.current.volume = audioRef.current.volume > 0.5 ? 0.3 : 0.7;
                   }
                 }}
-                className="text-[#6b0f2b] hover:text-[#6b0f2b]/80 transition-colors"
+                className="text-[#6b0f2b] hover:text-[#6b0f2b]/80 transition-colors p-2"
                 title="Volume"
               >
                 <Volume2 size={20} />
@@ -211,21 +211,21 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({ musicUrl }) => {
         {/* Floating button */}
         <button 
           onClick={toggleMusic}
-          className="flex items-center justify-center w-12 h-12 rounded-full bg-[#6b0f2b] text-white shadow-lg hover:bg-[#6b0f2b]/90 transition-all duration-300"
+          className="flex items-center justify-center w-14 h-14 rounded-full bg-[#6b0f2b] text-white shadow-lg hover:bg-[#6b0f2b]/90 transition-all duration-300 border-2 border-white"
           aria-label={isPlaying ? "Mute music" : "Play music"}
           title={isPlaying ? "Mute music" : "Play music"}
         >
           {isPlaying ? (
-            <Volume2 size={20} />
+            <Volume2 size={22} />
           ) : (
-            <VolumeX size={20} />
+            <VolumeX size={22} />
           )}
         </button>
       </div>
       
       {/* Music playing indicator */}
       {isPlaying && (
-        <div className="absolute -top-8 right-0 whitespace-nowrap text-xs bg-white/90 dark:bg-gray-800/90 text-[#6b0f2b] px-2 py-1 rounded-md shadow-sm">
+        <div className="absolute -top-8 right-0 whitespace-nowrap text-xs bg-white/95 backdrop-blur-sm text-[#6b0f2b] px-3 py-1 rounded-md shadow-md border border-[#e8c1c8]">
           <Music className="inline-block w-3 h-3 mr-1" />
           <span>Music Playing</span>
         </div>

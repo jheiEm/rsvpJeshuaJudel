@@ -40,11 +40,7 @@ const EntourageSection = ({ title, left, right }: EntourageSectionProps) => {
           {left.map((group, index) => (
             <motion.div 
               key={index} 
-              className={`relative backdrop-blur-sm p-6 rounded-lg ${
-                group.title.includes("To ") 
-                  ? "bg-gradient-to-b from-white to-[#fef2f4] border-2 border-[#8a1538] shadow-md" 
-                  : "bg-white bg-opacity-70 border border-[#e8c1c8] shadow-sm"
-              }`}
+              className="relative backdrop-blur-sm p-6 rounded-lg bg-gradient-to-b from-white to-[#fef2f4] border-2 border-[#8a1538] shadow-md"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
@@ -55,20 +51,12 @@ const EntourageSection = ({ title, left, right }: EntourageSectionProps) => {
                   {group.icon}
                 </div>
               )}
-              <h4 className={`font-['Cormorant_Garamond'] text-xl uppercase tracking-wider text-center mb-4 pb-2 ${
-                group.title.includes("To ")
-                  ? "text-[#6b0f2b] font-semibold border-b-2 border-[#8a1538]"
-                  : "text-[#6b0f2b] border-b border-[#e8c1c8]"
-              }`}>
+              <h4 className="font-['Cormorant_Garamond'] text-xl uppercase tracking-wider text-center mb-4 pb-2 text-[#6b0f2b] font-semibold border-b-2 border-[#8a1538]">
                 {group.title}
               </h4>
               <ul className="text-center space-y-2">
                 {group.members.map((member, i) => (
-                  <li key={i} className={`font-['Cormorant_Garamond'] tracking-wide ${
-                    group.title.includes("To ")
-                      ? "text-[#4a5568] font-medium"
-                      : "text-[#4a5568]"
-                  }`}>{member}</li>
+                  <li key={i} className="font-['Cormorant_Garamond'] tracking-wide text-[#4a5568] font-medium">{member}</li>
                 ))}
               </ul>
               {group.description && (
@@ -83,11 +71,7 @@ const EntourageSection = ({ title, left, right }: EntourageSectionProps) => {
           {right.map((group, index) => (
             <motion.div 
               key={index} 
-              className={`relative backdrop-blur-sm p-6 rounded-lg ${
-                group.title.includes("To ") 
-                  ? "bg-gradient-to-b from-white to-[#fef2f4] border-2 border-[#8a1538] shadow-md" 
-                  : "bg-white bg-opacity-70 border border-[#e8c1c8] shadow-sm"
-              }`}
+              className="relative backdrop-blur-sm p-6 rounded-lg bg-gradient-to-b from-white to-[#fef2f4] border-2 border-[#8a1538] shadow-md"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
@@ -98,20 +82,12 @@ const EntourageSection = ({ title, left, right }: EntourageSectionProps) => {
                   {group.icon}
                 </div>
               )}
-              <h4 className={`font-['Cormorant_Garamond'] text-xl uppercase tracking-wider text-center mb-4 pb-2 ${
-                group.title.includes("To ")
-                  ? "text-[#6b0f2b] font-semibold border-b-2 border-[#8a1538]"
-                  : "text-[#6b0f2b] border-b border-[#e8c1c8]"
-              }`}>
+              <h4 className="font-['Cormorant_Garamond'] text-xl uppercase tracking-wider text-center mb-4 pb-2 text-[#6b0f2b] font-semibold border-b-2 border-[#8a1538]">
                 {group.title}
               </h4>
               <ul className="text-center space-y-2">
                 {group.members.map((member, i) => (
-                  <li key={i} className={`font-['Cormorant_Garamond'] tracking-wide ${
-                    group.title.includes("To ")
-                      ? "text-[#4a5568] font-medium"
-                      : "text-[#4a5568]"
-                  }`}>{member}</li>
+                  <li key={i} className="font-['Cormorant_Garamond'] tracking-wide text-[#4a5568] font-medium">{member}</li>
                 ))}
               </ul>
               {group.description && (
@@ -194,7 +170,7 @@ const WeddingSymbols = () => {
           {symbols.map((symbol, index) => (
             <motion.div 
               key={index} 
-              className="text-center bg-white/90 backdrop-blur-sm p-6 rounded-lg shadow-sm border border-[#e8c1c8] hover:shadow-md transition-all duration-300 hover:-translate-y-1"
+              className="text-center bg-gradient-to-b from-white to-[#fef2f4] backdrop-blur-sm p-6 rounded-lg shadow-md border-2 border-[#8a1538] hover:-translate-y-1 transition-all duration-300"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
@@ -203,16 +179,16 @@ const WeddingSymbols = () => {
               <div className="mb-2">
                 {symbol.icon}
               </div>
-              <h4 className="font-['Cormorant_Garamond'] text-xl text-[#6b0f2b] uppercase tracking-wide mb-3 pb-2 border-b border-[#e8c1c8]">
+              <h4 className="font-['Cormorant_Garamond'] text-xl text-[#6b0f2b] uppercase tracking-wide mb-3 pb-2 font-semibold border-b-2 border-[#8a1538]">
                 {symbol.title}
               </h4>
-              <p className="text-[#4a5568] font-['Cormorant_Garamond'] tracking-wide text-lg">{symbol.name}</p>
+              <p className="text-[#4a5568] font-['Cormorant_Garamond'] tracking-wide text-lg font-medium">{symbol.name}</p>
             </motion.div>
           ))}
         </div>
         
         <motion.div 
-          className="text-center bg-white/90 backdrop-blur-sm p-6 rounded-lg shadow-sm border border-[#e8c1c8] relative overflow-hidden"
+          className="text-center bg-gradient-to-b from-white to-[#fef2f4] backdrop-blur-sm p-6 rounded-lg shadow-md border-2 border-[#8a1538] relative overflow-hidden max-w-2xl mx-auto"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.3 }}
@@ -244,12 +220,12 @@ const WeddingSymbols = () => {
                 />
               </svg>
             </div>
-            <h4 className="font-['Cormorant_Garamond'] text-xl text-[#6b0f2b] uppercase tracking-wide mb-4 pb-2 border-b border-[#e8c1c8]">
+            <h4 className="font-['Cormorant_Garamond'] text-xl text-[#6b0f2b] uppercase tracking-wide mb-4 pb-2 font-semibold border-b-2 border-[#8a1538]">
               Flower Girls
             </h4>
             <ul className="grid grid-cols-1 md:grid-cols-2 gap-2">
               {flowerGirls.map((girl, index) => (
-                <li key={index} className="text-[#4a5568] font-['Cormorant_Garamond'] tracking-wide text-lg">{girl}</li>
+                <li key={index} className="text-[#4a5568] font-['Cormorant_Garamond'] tracking-wide text-lg font-medium">{girl}</li>
               ))}
             </ul>
           </div>
