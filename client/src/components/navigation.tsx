@@ -6,11 +6,21 @@ import { motion, AnimatePresence } from "framer-motion";
 const Navigation = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState('home'); // Added state for active section
 
   // Handle scroll event to change navbar appearance
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 100);
+      //Added logic to detect active section based on scroll position.  This is a simplified example and may need adjustment based on your section IDs and heights.
+      const sections = document.querySelectorAll('section');
+      sections.forEach(section => {
+        const rect = section.getBoundingClientRect();
+        if (rect.top >= 0 && rect.top <= window.innerHeight / 2) {
+          setActiveSection(section.id);
+        }
+      });
+
     };
 
     window.addEventListener("scroll", handleScroll);
@@ -23,7 +33,8 @@ const Navigation = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
-  const handleNavLinkClick = () => {
+  const handleNavLinkClick = (section) => {
+    setActiveSection(section); //Update active section on link click.
     if (isMobileMenuOpen) {
       setIsMobileMenuOpen(false);
     }
@@ -46,43 +57,78 @@ const Navigation = () => {
         <div className="hidden md:flex space-x-6">
           <a
             href="#home"
-            className="font-['Cormorant_Garamond'] text-[#4a5568] hover:text-[#6b0f2b] transition-colors"
+            onClick={() => handleNavLinkClick('home')} //added onClick for active section tracking
+            className={`font-['Cormorant_Garamond'] transition-colors ${
+              activeSection === 'home'
+                ? 'text-[#6b0f2b] font-semibold'
+                : 'text-[#4a5568] hover:text-[#6b0f2b]'
+            }`}
           >
             Home
           </a>
           <a
             href="#story"
-            className="font-['Cormorant_Garamond'] text-[#4a5568] hover:text-[#6b0f2b] transition-colors"
+            onClick={() => handleNavLinkClick('story')} //added onClick for active section tracking
+            className={`font-['Cormorant_Garamond'] transition-colors ${
+              activeSection === 'story'
+                ? 'text-[#6b0f2b] font-semibold'
+                : 'text-[#4a5568] hover:text-[#6b0f2b]'
+            }`}
           >
             Our Story
           </a>
           <a
             href="#details"
-            className="font-['Cormorant_Garamond'] text-[#4a5568] hover:text-[#6b0f2b] transition-colors"
+            onClick={() => handleNavLinkClick('details')} //added onClick for active section tracking
+            className={`font-['Cormorant_Garamond'] transition-colors ${
+              activeSection === 'details'
+                ? 'text-[#6b0f2b] font-semibold'
+                : 'text-[#4a5568] hover:text-[#6b0f2b]'
+            }`}
           >
             Details
           </a>
           <a
             href="#entourage"
-            className="font-['Cormorant_Garamond'] text-[#4a5568] hover:text-[#6b0f2b] transition-colors"
+            onClick={() => handleNavLinkClick('entourage')} //added onClick for active section tracking
+            className={`font-['Cormorant_Garamond'] transition-colors ${
+              activeSection === 'entourage'
+                ? 'text-[#6b0f2b] font-semibold'
+                : 'text-[#4a5568] hover:text-[#6b0f2b]'
+            }`}
           >
             Wedding Party
           </a>
           <a
             href="#gallery"
-            className="font-['Cormorant_Garamond'] text-[#4a5568] hover:text-[#6b0f2b] transition-colors"
+            onClick={() => handleNavLinkClick('gallery')} //added onClick for active section tracking
+            className={`font-['Cormorant_Garamond'] transition-colors ${
+              activeSection === 'gallery'
+                ? 'text-[#6b0f2b] font-semibold'
+                : 'text-[#4a5568] hover:text-[#6b0f2b]'
+            }`}
           >
             Gallery
           </a>
           <a
             href="#rsvp"
-            className="font-['Cormorant_Garamond'] text-[#4a5568] hover:text-[#6b0f2b] transition-colors"
+            onClick={() => handleNavLinkClick('rsvp')} //added onClick for active section tracking
+            className={`font-['Cormorant_Garamond'] transition-colors ${
+              activeSection === 'rsvp'
+                ? 'text-[#6b0f2b] font-semibold'
+                : 'text-[#4a5568] hover:text-[#6b0f2b]'
+            }`}
           >
             RSVP
           </a>
           <a
             href="#messages"
-            className="font-['Cormorant_Garamond'] text-[#4a5568] hover:text-[#6b0f2b] transition-colors"
+            onClick={() => handleNavLinkClick('messages')} //added onClick for active section tracking
+            className={`font-['Cormorant_Garamond'] transition-colors ${
+              activeSection === 'messages'
+                ? 'text-[#6b0f2b] font-semibold'
+                : 'text-[#4a5568] hover:text-[#6b0f2b]'
+            }`}
           >
             Messages
           </a>
@@ -113,50 +159,78 @@ const Navigation = () => {
             <div className="container mx-auto px-4 flex flex-col space-y-4">
               <a
                 href="#home"
-                className="font-['Cormorant_Garamond'] text-[#4a5568] hover:text-[#6b0f2b] transition-colors"
-                onClick={handleNavLinkClick}
+                onClick={() => handleNavLinkClick('home')} //added onClick for active section tracking
+                className={`font-['Cormorant_Garamond'] transition-colors ${
+                  activeSection === 'home'
+                    ? 'text-[#6b0f2b] font-semibold'
+                    : 'text-[#4a5568] hover:text-[#6b0f2b]'
+                }`}
               >
                 Home
               </a>
               <a
                 href="#story"
-                className="font-['Cormorant_Garamond'] text-[#4a5568] hover:text-[#6b0f2b] transition-colors"
-                onClick={handleNavLinkClick}
+                onClick={() => handleNavLinkClick('story')} //added onClick for active section tracking
+                className={`font-['Cormorant_Garamond'] transition-colors ${
+                  activeSection === 'story'
+                    ? 'text-[#6b0f2b] font-semibold'
+                    : 'text-[#4a5568] hover:text-[#6b0f2b]'
+                }`}
               >
                 Our Story
               </a>
               <a
                 href="#details"
-                className="font-['Cormorant_Garamond'] text-[#4a5568] hover:text-[#6b0f2b] transition-colors"
-                onClick={handleNavLinkClick}
+                onClick={() => handleNavLinkClick('details')} //added onClick for active section tracking
+                className={`font-['Cormorant_Garamond'] transition-colors ${
+                  activeSection === 'details'
+                    ? 'text-[#6b0f2b] font-semibold'
+                    : 'text-[#4a5568] hover:text-[#6b0f2b]'
+                }`}
               >
                 Details
               </a>
               <a
                 href="#entourage"
-                className="font-['Cormorant_Garamond'] text-[#4a5568] hover:text-[#6b0f2b] transition-colors"
-                onClick={handleNavLinkClick}
+                onClick={() => handleNavLinkClick('entourage')} //added onClick for active section tracking
+                className={`font-['Cormorant_Garamond'] transition-colors ${
+                  activeSection === 'entourage'
+                    ? 'text-[#6b0f2b] font-semibold'
+                    : 'text-[#4a5568] hover:text-[#6b0f2b]'
+                }`}
               >
                 Wedding Party
               </a>
               <a
                 href="#gallery"
-                className="font-['Cormorant_Garamond'] text-[#4a5568] hover:text-[#6b0f2b] transition-colors"
-                onClick={handleNavLinkClick}
+                onClick={() => handleNavLinkClick('gallery')} //added onClick for active section tracking
+                className={`font-['Cormorant_Garamond'] transition-colors ${
+                  activeSection === 'gallery'
+                    ? 'text-[#6b0f2b] font-semibold'
+                    : 'text-[#4a5568] hover:text-[#6b0f2b]'
+                }`}
               >
                 Gallery
               </a>
               <a
                 href="#rsvp"
-                className="font-['Cormorant_Garamond'] text-[#4a5568] hover:text-[#6b0f2b] transition-colors"
-                onClick={handleNavLinkClick}
+                onClick={() => handleNavLinkClick('rsvp')} //added onClick for active section tracking
+                className={`font-['Cormorant_Garamond'] transition-colors ${
+                  activeSection === 'rsvp'
+                    ? 'text-[#6b0f2b] font-semibold'
+                    : 'text-[#4a5568] hover:text-[#6b0f2b]'
+                }`}
               >
                 RSVP
               </a>
               <a
                 href="#messages"
-                className="font-['Cormorant_Garamond'] text-[#4a5568] hover:text-[#6b0f2b] transition-colors"
-                onClick={handleNavLinkClick}
+                onClick={() => handleNavLinkClick('messages')} //added onClick for active section tracking
+                className={`font-['Cormorant_Garamond'] transition-colors ${
+                  activeSection === 'messages'
+                    ? 'text-[#6b0f2b] font-semibold'
+                    : 'text-[#4a5568] hover:text-[#6b0f2b]'
+                }`}
               >
                 Messages
               </a>
