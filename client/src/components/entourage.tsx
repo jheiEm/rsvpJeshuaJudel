@@ -281,6 +281,22 @@ const Entourage = () => {
         description: "The veil and cord symbolize the clothing of the couple as one in their marriage journey."
       },
       {
+        title: "To Light Our Path",
+        members: [
+          "MR. JOHN CZAR F. MERU",
+          "MS. EHRA MAYEL H. MENDOZA"
+        ],
+        icon: (
+          <svg width="40" height="40" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" className="mx-auto mb-3">
+            <path d="M16,12V4H17V2H7V4H8V12L6,14V16H11.2V22H12.8V16H18V14L16,12M8.8,14L10,12.8V4H14V12.8L15.2,14H8.8Z" 
+              fill="#6b0f2b" 
+              className="drop-shadow-md"
+            />
+          </svg>
+        ),
+        description: "The candles represent the light that will guide the couple's path together."
+      },
+      {
         title: "Groomsmen",
         members: [
           "MR. ALEXIS A. LUMBERA",
@@ -338,22 +354,6 @@ const Entourage = () => {
           </svg>
         ),
         description: "The cord symbolizes the binding of the couple as one in their marriage journey."
-      },
-      {
-        title: "To Light Our Path",
-        members: [
-          "MR. JOHN CZAR F. MERU",
-          "MS. EHRA MAYEL H. MENDOZA"
-        ],
-        icon: (
-          <svg width="40" height="40" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" className="mx-auto mb-3">
-            <path d="M16,12V4H17V2H7V4H8V12L6,14V16H11.2V22H12.8V16H18V14L16,12M8.8,14L10,12.8V4H14V12.8L15.2,14H8.8Z" 
-              fill="#6b0f2b" 
-              className="drop-shadow-md"
-            />
-          </svg>
-        ),
-        description: "The candles represent the light that will guide the couple's path together."
       },
       {
         title: "Bridesmaid",
