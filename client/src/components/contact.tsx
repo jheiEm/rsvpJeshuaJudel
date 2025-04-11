@@ -27,7 +27,7 @@ const Contact = () => {
 
   return (
     <section
-      id="contact"
+      id="contact-us"
       className="py-16 bg-[#fff5f7] relative overflow-hidden"
     >
       {/* Decorative elements */}
