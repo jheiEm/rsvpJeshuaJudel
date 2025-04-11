@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import ProgressBar from "@/components/progress-bar";
 import Navigation from "@/components/navigation";
 import HeroSection from "@/components/hero-section";
 import CountdownTimer from "@/components/countdown-timer";
@@ -42,6 +43,7 @@ const Home = () => {
   return (
     <div className="bg-texture font-['Montserrat'] text-[#2d3748]">
       <Navigation />
+      <ProgressBar />
       <HeroSection />
       <CountdownTimer />
       <AnimatedLoveStory />
