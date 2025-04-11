@@ -30,41 +30,65 @@ const Navigation = () => {
   };
 
   return (
-    <nav 
+    <nav
       className={`fixed w-full bg-white bg-opacity-95 shadow-sm z-50 transition-all duration-300 ${
         isScrolled ? "py-2 shadow-md" : "py-3"
       }`}
     >
       <div className="container mx-auto px-4 flex justify-between items-center">
-        <a href="#home" className="font-['Great_Vibes'] text-3xl text-[#6b0f2b]">
-          Jeshua & Judel
+        <a
+          href="#home"
+          className="font-['Great_Vibes'] text-3xl text-[#6b0f2b]"
+        >
+          J & J
         </a>
-        
+
         <div className="hidden md:flex space-x-6">
-          <a href="#home" className="font-['Cormorant_Garamond'] text-[#4a5568] hover:text-[#6b0f2b] transition-colors">
+          <a
+            href="#home"
+            className="font-['Cormorant_Garamond'] text-[#4a5568] hover:text-[#6b0f2b] transition-colors"
+          >
             Home
           </a>
-          <a href="#story" className="font-['Cormorant_Garamond'] text-[#4a5568] hover:text-[#6b0f2b] transition-colors">
+          <a
+            href="#story"
+            className="font-['Cormorant_Garamond'] text-[#4a5568] hover:text-[#6b0f2b] transition-colors"
+          >
             Our Story
           </a>
-          <a href="#details" className="font-['Cormorant_Garamond'] text-[#4a5568] hover:text-[#6b0f2b] transition-colors">
+          <a
+            href="#details"
+            className="font-['Cormorant_Garamond'] text-[#4a5568] hover:text-[#6b0f2b] transition-colors"
+          >
             Details
           </a>
-          <a href="#entourage" className="font-['Cormorant_Garamond'] text-[#4a5568] hover:text-[#6b0f2b] transition-colors">
+          <a
+            href="#entourage"
+            className="font-['Cormorant_Garamond'] text-[#4a5568] hover:text-[#6b0f2b] transition-colors"
+          >
             Wedding Party
           </a>
-          <a href="#gallery" className="font-['Cormorant_Garamond'] text-[#4a5568] hover:text-[#6b0f2b] transition-colors">
+          <a
+            href="#gallery"
+            className="font-['Cormorant_Garamond'] text-[#4a5568] hover:text-[#6b0f2b] transition-colors"
+          >
             Gallery
           </a>
-          <a href="#rsvp" className="font-['Cormorant_Garamond'] text-[#4a5568] hover:text-[#6b0f2b] transition-colors">
+          <a
+            href="#rsvp"
+            className="font-['Cormorant_Garamond'] text-[#4a5568] hover:text-[#6b0f2b] transition-colors"
+          >
             RSVP
           </a>
-          <a href="#messages" className="font-['Cormorant_Garamond'] text-[#4a5568] hover:text-[#6b0f2b] transition-colors">
+          <a
+            href="#messages"
+            className="font-['Cormorant_Garamond'] text-[#4a5568] hover:text-[#6b0f2b] transition-colors"
+          >
             Messages
           </a>
         </div>
-        
-        <button 
+
+        <button
           className="md:hidden text-[#6b0f2b]"
           onClick={toggleMobileMenu}
           aria-label="Toggle mobile menu"
@@ -87,50 +111,50 @@ const Navigation = () => {
             transition={{ duration: 0.3 }}
           >
             <div className="container mx-auto px-4 flex flex-col space-y-4">
-              <a 
-                href="#home" 
+              <a
+                href="#home"
                 className="font-['Cormorant_Garamond'] text-[#4a5568] hover:text-[#6b0f2b] transition-colors"
                 onClick={handleNavLinkClick}
               >
                 Home
               </a>
-              <a 
-                href="#story" 
+              <a
+                href="#story"
                 className="font-['Cormorant_Garamond'] text-[#4a5568] hover:text-[#6b0f2b] transition-colors"
                 onClick={handleNavLinkClick}
               >
                 Our Story
               </a>
-              <a 
-                href="#details" 
+              <a
+                href="#details"
                 className="font-['Cormorant_Garamond'] text-[#4a5568] hover:text-[#6b0f2b] transition-colors"
                 onClick={handleNavLinkClick}
               >
                 Details
               </a>
-              <a 
-                href="#entourage" 
+              <a
+                href="#entourage"
                 className="font-['Cormorant_Garamond'] text-[#4a5568] hover:text-[#6b0f2b] transition-colors"
                 onClick={handleNavLinkClick}
               >
                 Wedding Party
               </a>
-              <a 
-                href="#gallery" 
+              <a
+                href="#gallery"
                 className="font-['Cormorant_Garamond'] text-[#4a5568] hover:text-[#6b0f2b] transition-colors"
                 onClick={handleNavLinkClick}
               >
                 Gallery
               </a>
-              <a 
-                href="#rsvp" 
+              <a
+                href="#rsvp"
                 className="font-['Cormorant_Garamond'] text-[#4a5568] hover:text-[#6b0f2b] transition-colors"
                 onClick={handleNavLinkClick}
               >
                 RSVP
               </a>
-              <a 
-                href="#messages" 
+              <a
+                href="#messages"
                 className="font-['Cormorant_Garamond'] text-[#4a5568] hover:text-[#6b0f2b] transition-colors"
                 onClick={handleNavLinkClick}
               >

@@ -79,7 +79,7 @@ const HeroSection = () => {
         </motion.h3>
 
         <motion.div
-          className="px-6 py-4 backdrop-blur-sm bg-[#4a0d1f]/30 rounded-lg inline-block mb-10"
+          className="px-6 py-4 rounded-lg inline-block mb-10 text-[#820000]"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.8, delay: 1 }}

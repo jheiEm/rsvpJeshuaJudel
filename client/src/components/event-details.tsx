@@ -121,8 +121,8 @@ const EventDetails = () => {
       const routeCoordinates = [
         ceremonyCoords,
         [13.9725, 121.1985], // Intersection point 1
-        [13.9740, 121.2010], // Mid-point
-        [13.9750, 121.2030], // Intersection point 2
+        [13.974, 121.201], // Mid-point
+        [13.975, 121.203], // Intersection point 2
         receptionCoords,
       ];
 
@@ -198,7 +198,7 @@ const EventDetails = () => {
           >
             <div className="mb-6">
               <img
-                src="https://images.unsplash.com/photo-1519741347686-c1e0aadf4611?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                src="/images/venue.jpg"
                 alt="Ceremony venue"
                 className="w-full h-48 object-cover rounded-md"
               />
@@ -242,7 +242,7 @@ const EventDetails = () => {
           >
             <div className="mb-6">
               <img
-                src="https://images.unsplash.com/photo-1519167758481-83f550bb49b3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                src="/images/reception.jpg"
                 alt="Reception venue"
                 className="w-full h-48 object-cover rounded-md"
               />
@@ -252,7 +252,7 @@ const EventDetails = () => {
             </h3>
             <div className="h-[1px] w-16 mb-4 bg-gradient-to-r from-transparent via-[#6b0f2b] to-transparent"></div>
             <p className="font-['Montserrat'] text-[#718096] mb-4">
-              Celebrate with us over dinner and festivities.
+              Celebrate with us over early dinner and festivities.
             </p>
             <ul className="text-[#4a5568] space-y-2 mb-6">
               <li className="flex items-start">
@@ -292,8 +292,14 @@ const EventDetails = () => {
             directions from the church to the reception.
           </p>
 
-          <div className="relative w-full overflow-hidden rounded-lg shadow-lg mb-8" style={{ paddingBottom: '56.25%' }}>
-            <div ref={mapRef} className="absolute top-0 left-0 w-full h-full bg-[#a0aec0]">
+          <div
+            className="relative w-full overflow-hidden rounded-lg shadow-lg mb-8"
+            style={{ paddingBottom: "56.25%" }}
+          >
+            <div
+              ref={mapRef}
+              className="absolute top-0 left-0 w-full h-full bg-[#a0aec0]"
+            >
               <div className="w-full h-full flex items-center justify-center">
                 <p className="text-[#4a5568]">Interactive map loading...</p>
               </div>

@@ -13,27 +13,27 @@ const Gallery = () => {
   // Gallery images
   const images: GalleryImage[] = [
     {
-      src: "https://images.unsplash.com/photo-1519225421980-715cb0215aed?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+      src: "/images/IMG_0089.jpg",
       alt: "Couple portrait",
     },
     {
-      src: "https://images.unsplash.com/photo-1606800052052-a08af7148866?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+      src: "/images/IMG_9661.jpg",
       alt: "Couple holding hands",
     },
     {
-      src: "https://images.unsplash.com/photo-1513725673171-537abba17912?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+      src: "/images/IMG_9536.jpg",
       alt: "Engagement",
     },
     {
-      src: "https://images.unsplash.com/photo-1543459176-4426b35c5c7a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+      src: "/images/IMG_9607.jpg",
       alt: "Wedding venue",
     },
     {
-      src: "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+      src: "/images/IMG_9675.jpg",
       alt: "Floral arrangement",
     },
     {
-      src: "https://images.unsplash.com/photo-1549417229-aa67d3263c09?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+      src: "/images/IMG_9918.jpg",
       alt: "Wedding decor",
     },
   ];
