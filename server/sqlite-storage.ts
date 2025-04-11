@@ -232,20 +232,28 @@ export class SqliteStorage implements IStorage {
   }
   
   async getGuestMessages(): Promise<GuestMessage[]> {
-    // Return only approved messages, sorted by newest first
-    const messages = db.select()
-      .from(guestMessages)
-      .where(eq(guestMessages.approved, true))
-      .all();
+    try {
+      // Use raw SQL to get all messages
+      const query = `SELECT * FROM guest_messages WHERE approved = 1 ORDER BY created_at DESC`;
+      const messages = sqlite.prepare(query).all() as any[];
       
-    // Convert string dates to Date objects for the frontend
-    return messages.map(msg => ({
-      ...msg,
-      createdAt: new Date(msg.createdAt)
-    }))
-    .sort((a, b) => {
-      return b.createdAt.getTime() - a.createdAt.getTime();
-    });
+      if (!messages || messages.length === 0) {
+        return [];
+      }
+      
+      // Convert to proper format with dates
+      return messages.map(msg => ({
+        id: msg.id,
+        name: msg.name,
+        message: msg.message,
+        photoUrl: msg.photo_url,
+        approved: Boolean(msg.approved),
+        createdAt: new Date(msg.created_at)
+      }));
+    } catch (error) {
+      console.error("Error fetching guest messages:", error);
+      return [];
+    }
   }
   
   async savePhotoAndGetUrl(file: UploadedFile): Promise<string> {
@@ -269,13 +277,24 @@ export class SqliteStorage implements IStorage {
   
   // New message management methods
   async getGuestMessageById(id: number): Promise<GuestMessage | undefined> {
-    const message = db.select().from(guestMessages).where(eq(guestMessages.id, id)).get();
-    if (!message) return undefined;
-    
-    return {
-      ...message,
-      createdAt: new Date(message.createdAt)
-    };
+    try {
+      const query = `SELECT * FROM guest_messages WHERE id = ? LIMIT 1`;
+      const message = sqlite.prepare(query).get(id) as any;
+      
+      if (!message) return undefined;
+      
+      return {
+        id: message.id,
+        name: message.name,
+        message: message.message,
+        photoUrl: message.photo_url,
+        approved: Boolean(message.approved),
+        createdAt: new Date(message.created_at)
+      };
+    } catch (error) {
+      console.error(`Error fetching guest message by id ${id}:`, error);
+      return undefined;
+    }
   }
   
   async updateGuestMessageApproval(id: number, approved: boolean): Promise<GuestMessage | undefined> {

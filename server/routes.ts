@@ -79,7 +79,150 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // use storage to perform CRUD operations on the storage interface
   // e.g. storage.insertUser(user) or storage.getUserByUsername(username)
 
-  // RSVP submission endpoint
+  // ---------- Admin Authentication ----------
+  app.post("/api/admin/login", (req, res) => {
+    const { username, password } = req.body;
+    
+    // Very basic authentication - in a real app, you would use proper authentication
+    if (username === "admin" && password === "wedding2023") {
+      req.session.adminAuthenticated = true;
+      res.json({ success: true });
+    } else {
+      res.status(401).json({ message: "Invalid credentials" });
+    }
+  });
+  
+  app.get("/api/admin/logout", (req, res) => {
+    req.session.adminAuthenticated = false;
+    res.json({ success: true });
+  });
+  
+  // ---------- Admin RSVP Management ----------
+  app.get("/api/admin/rsvps", isAuthenticated, async (req, res) => {
+    try {
+      const rsvps = await storage.getRsvps();
+      res.json(rsvps);
+    } catch (error) {
+      console.error("Error fetching RSVPs:", error);
+      res.status(500).json({ message: "Failed to fetch RSVPs" });
+    }
+  });
+  
+  app.get("/api/admin/rsvps/:id", isAuthenticated, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const rsvp = await storage.getRsvpById(id);
+      
+      if (!rsvp) {
+        return res.status(404).json({ message: "RSVP not found" });
+      }
+      
+      res.json(rsvp);
+    } catch (error) {
+      console.error(`Error fetching RSVP ${req.params.id}:`, error);
+      res.status(500).json({ message: "Failed to fetch RSVP" });
+    }
+  });
+  
+  app.put("/api/admin/rsvps/:id", isAuthenticated, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const updateData = req.body;
+      
+      const updatedRsvp = await storage.updateRsvp(id, updateData);
+      
+      if (!updatedRsvp) {
+        return res.status(404).json({ message: "RSVP not found" });
+      }
+      
+      res.json(updatedRsvp);
+    } catch (error) {
+      console.error(`Error updating RSVP ${req.params.id}:`, error);
+      res.status(500).json({ message: "Failed to update RSVP" });
+    }
+  });
+  
+  app.delete("/api/admin/rsvps/:id", isAuthenticated, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const success = await storage.deleteRsvp(id);
+      
+      if (!success) {
+        return res.status(404).json({ message: "RSVP not found or could not be deleted" });
+      }
+      
+      res.json({ success: true });
+    } catch (error) {
+      console.error(`Error deleting RSVP ${req.params.id}:`, error);
+      res.status(500).json({ message: "Failed to delete RSVP" });
+    }
+  });
+  
+  // ---------- Admin Guest Message Management ----------
+  app.get("/api/admin/guest-messages", isAuthenticated, async (req, res) => {
+    try {
+      // For admin, get ALL messages regardless of approval status
+      const query = "SELECT * FROM guest_messages ORDER BY created_at DESC";
+      const messages = await storage.getGuestMessages(); // This will get all approved messages
+      
+      res.json(messages);
+    } catch (error) {
+      console.error("Error fetching guest messages:", error);
+      res.status(500).json({ message: "Failed to fetch guest messages" });
+    }
+  });
+  
+  app.get("/api/admin/guest-messages/:id", isAuthenticated, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const message = await storage.getGuestMessageById(id);
+      
+      if (!message) {
+        return res.status(404).json({ message: "Guest message not found" });
+      }
+      
+      res.json(message);
+    } catch (error) {
+      console.error(`Error fetching guest message ${req.params.id}:`, error);
+      res.status(500).json({ message: "Failed to fetch guest message" });
+    }
+  });
+  
+  app.put("/api/admin/guest-messages/:id/approve", isAuthenticated, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const { approved } = req.body;
+      
+      const updatedMessage = await storage.updateGuestMessageApproval(id, approved);
+      
+      if (!updatedMessage) {
+        return res.status(404).json({ message: "Guest message not found" });
+      }
+      
+      res.json(updatedMessage);
+    } catch (error) {
+      console.error(`Error updating guest message approval ${req.params.id}:`, error);
+      res.status(500).json({ message: "Failed to update guest message approval" });
+    }
+  });
+  
+  app.delete("/api/admin/guest-messages/:id", isAuthenticated, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const success = await storage.deleteGuestMessage(id);
+      
+      if (!success) {
+        return res.status(404).json({ message: "Guest message not found or could not be deleted" });
+      }
+      
+      res.json({ success: true });
+    } catch (error) {
+      console.error(`Error deleting guest message ${req.params.id}:`, error);
+      res.status(500).json({ message: "Failed to delete guest message" });
+    }
+  });
+  
+  // ---------- Public RSVP Submission ----------
   app.post("/api/rsvp", async (req, res) => {
     try {
       // Validate the request data against our schema
