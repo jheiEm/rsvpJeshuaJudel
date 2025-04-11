@@ -432,7 +432,7 @@ const RsvpForm = () => {
         >
           <h3 className="font-['Great_Vibes'] text-2xl text-[#6b0f2b] mb-4">Snap & Share</h3>
           <p className="text-[#718096] mb-4">If you happen to snap a pic, don't forget to do a tag of it</p>
-          <p className="text-[#6b0f2b] font-bold tracking-wider mb-4">#JESHUANNABEWITHUDLFOREEVER</p>
+          <p className="text-[#6b0f2b] font-bold tracking-wider mb-4">#JESHUANNABEWITHJUDELFOREVER</p>
           <div className="flex justify-center gap-4">
             <a href="#" className="text-[#6b0f2b] hover:text-[#890f32]">
               <Instagram className="h-6 w-6" />
