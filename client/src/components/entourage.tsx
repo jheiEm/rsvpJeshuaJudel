@@ -14,21 +14,29 @@ interface EntourageSectionProps {
 }
 
 const EntourageSection = ({ title, left, right }: EntourageSectionProps) => {
-  // Find the Bridesmaid card and To Light Our Path card in the arrays
+  // Find the special cards we want to handle differently
   const bridesmaidIndex = right.findIndex(item => item.title === "Bridesmaid");
   const bridesmaidCard = bridesmaidIndex >= 0 ? right[bridesmaidIndex] : null;
+  
+  const groomsmenIndex = left.findIndex(item => item.title === "Groomsmen");
+  const groomsmenCard = groomsmenIndex >= 0 ? left[groomsmenIndex] : null;
   
   const lightPathIndex = left.findIndex(item => item.title === "To Light Our Path");
   const lightPathCard = lightPathIndex >= 0 ? left[lightPathIndex] : null;
   
-  // Filter out the cards we'll display separately
+  const clothUsIndex = left.findIndex(item => item.title === "To Cloth Us As One");
+  const clothUsCard = clothUsIndex >= 0 ? left[clothUsIndex] : null;
+  
+  const bindUsIndex = right.findIndex(item => item.title === "To Bind Us As One");
+  const bindUsCard = bindUsIndex >= 0 ? right[bindUsIndex] : null;
+  
+  // Filter out all the special cards that we'll display separately
   const filteredRight = right.filter(item => 
-    item.title !== "Bridesmaid"
+    item.title !== "Bridesmaid" && item.title !== "To Bind Us As One"
   );
   
-  // Filter out the To Light Our Path card from left column
   const filteredLeft = left.filter(item => 
-    item.title !== "To Light Our Path"
+    item.title !== "To Light Our Path" && item.title !== "Groomsmen" && item.title !== "To Cloth Us As One"
   );
   
   return (
@@ -125,7 +133,79 @@ const EntourageSection = ({ title, left, right }: EntourageSectionProps) => {
         </div>
       </div>
       
-      {/* Centered To Light Our Path card */}
+      {/* Centered special cards in the order requested */}
+      
+      {/* To Cloth Us As One */}
+      {clothUsCard && (
+        <div className="mt-12 max-w-md mx-auto">
+          <motion.div 
+            className="relative backdrop-blur-sm p-6 rounded-lg bg-gradient-to-b from-white to-[#fef2f4] border-2 border-[#8a1538] shadow-md"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            whileHover={{ 
+              y: -5, 
+              scale: 1.02,
+              boxShadow: "0 10px 25px -5px rgba(107, 15, 43, 0.2), 0 8px 10px -6px rgba(107, 15, 43, 0.1)" 
+            }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            viewport={{ once: true }}
+          >
+            {clothUsCard.icon && (
+              <div className="mb-2">
+                {clothUsCard.icon}
+              </div>
+            )}
+            <h4 className="font-['Cormorant_Garamond'] text-xl uppercase tracking-wider text-center mb-4 pb-2 text-[#6b0f2b] font-semibold border-b-2 border-[#8a1538]">
+              {clothUsCard.title}
+            </h4>
+            <ul className="text-center space-y-2">
+              {clothUsCard.members.map((member: string, i: number) => (
+                <li key={i} className="font-['Cormorant_Garamond'] tracking-wide text-[#4a5568] font-medium">{member}</li>
+              ))}
+            </ul>
+            {clothUsCard.description && (
+              <p className="mt-4 text-[#6b0f2b]/70 text-sm italic text-center">{clothUsCard.description}</p>
+            )}
+          </motion.div>
+        </div>
+      )}
+      
+      {/* To Bind Us As One */}
+      {bindUsCard && (
+        <div className="mt-12 max-w-md mx-auto">
+          <motion.div 
+            className="relative backdrop-blur-sm p-6 rounded-lg bg-gradient-to-b from-white to-[#fef2f4] border-2 border-[#8a1538] shadow-md"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            whileHover={{ 
+              y: -5, 
+              scale: 1.02,
+              boxShadow: "0 10px 25px -5px rgba(107, 15, 43, 0.2), 0 8px 10px -6px rgba(107, 15, 43, 0.1)" 
+            }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            viewport={{ once: true }}
+          >
+            {bindUsCard.icon && (
+              <div className="mb-2">
+                {bindUsCard.icon}
+              </div>
+            )}
+            <h4 className="font-['Cormorant_Garamond'] text-xl uppercase tracking-wider text-center mb-4 pb-2 text-[#6b0f2b] font-semibold border-b-2 border-[#8a1538]">
+              {bindUsCard.title}
+            </h4>
+            <ul className="text-center space-y-2">
+              {bindUsCard.members.map((member: string, i: number) => (
+                <li key={i} className="font-['Cormorant_Garamond'] tracking-wide text-[#4a5568] font-medium">{member}</li>
+              ))}
+            </ul>
+            {bindUsCard.description && (
+              <p className="mt-4 text-[#6b0f2b]/70 text-sm italic text-center">{bindUsCard.description}</p>
+            )}
+          </motion.div>
+        </div>
+      )}
+      
+      {/* To Light Our Path */}
       {lightPathCard && (
         <div className="mt-12 max-w-md mx-auto">
           <motion.div 
@@ -160,9 +240,43 @@ const EntourageSection = ({ title, left, right }: EntourageSectionProps) => {
         </div>
       )}
       
-      {/* Centered Bridesmaid card */}
-      {bridesmaidCard && (
-        <div className="mt-12 max-w-md mx-auto">
+      {/* Groomsmen and Bridesmaid side by side */}
+      <div className="mt-12 grid md:grid-cols-2 gap-8">
+        {/* Groomsmen */}
+        {groomsmenCard && (
+          <motion.div 
+            className="relative backdrop-blur-sm p-6 rounded-lg bg-gradient-to-b from-white to-[#fef2f4] border-2 border-[#8a1538] shadow-md"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            whileHover={{ 
+              y: -5, 
+              scale: 1.02,
+              boxShadow: "0 10px 25px -5px rgba(107, 15, 43, 0.2), 0 8px 10px -6px rgba(107, 15, 43, 0.1)" 
+            }}
+            transition={{ duration: 0.5, delay: 0.4 }}
+            viewport={{ once: true }}
+          >
+            {groomsmenCard.icon && (
+              <div className="mb-2">
+                {groomsmenCard.icon}
+              </div>
+            )}
+            <h4 className="font-['Cormorant_Garamond'] text-xl uppercase tracking-wider text-center mb-4 pb-2 text-[#6b0f2b] font-semibold border-b-2 border-[#8a1538]">
+              {groomsmenCard.title}
+            </h4>
+            <ul className="text-center space-y-2">
+              {groomsmenCard.members.map((member: string, i: number) => (
+                <li key={i} className="font-['Cormorant_Garamond'] tracking-wide text-[#4a5568] font-medium">{member}</li>
+              ))}
+            </ul>
+            {groomsmenCard.description && (
+              <p className="mt-4 text-[#6b0f2b]/70 text-sm italic text-center">{groomsmenCard.description}</p>
+            )}
+          </motion.div>
+        )}
+        
+        {/* Bridesmaid */}
+        {bridesmaidCard && (
           <motion.div 
             className="relative backdrop-blur-sm p-6 rounded-lg bg-gradient-to-b from-white to-[#fef2f4] border-2 border-[#8a1538] shadow-md"
             initial={{ opacity: 0, y: 20 }}
@@ -192,8 +306,8 @@ const EntourageSection = ({ title, left, right }: EntourageSectionProps) => {
               <p className="mt-4 text-[#6b0f2b]/70 text-sm italic text-center">{bridesmaidCard.description}</p>
             )}
           </motion.div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 };
