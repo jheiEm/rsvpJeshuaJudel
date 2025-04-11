@@ -499,7 +499,7 @@ const Entourage = () => {
             />
           </svg>
         ),
-        description: "The veil and cord symbolize the clothing of the couple as one in their marriage journey."
+        description: "The veil symbolizes the clothing of the couple as one in their marriage journey."
       },
       {
         title: "To Light Our Path",

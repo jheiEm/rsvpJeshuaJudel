@@ -6,22 +6,12 @@ const Contact = () => {
     {
       icon: <Phone className="h-5 w-5" />,
       title: "Phone",
-      details: ["Jeshua: +63 921 397 3751", "Judel: +63 921 397 3751"],
+      details: ["Jeshua: +63 968 669 9802", "Judel: +63 921 397 3751"],
     },
     {
       icon: <Mail className="h-5 w-5" />,
       title: "Email",
       details: ["merujeshua14@gmail.com", "lumberajudel@gmail.com"],
-    },
-    {
-      icon: <Home className="h-5 w-5" />,
-      title: "Accommodations",
-      details: ["Mountain Rock Resort", "Contact for special rates"],
-    },
-    {
-      icon: <Gift className="h-5 w-5" />,
-      title: "Registry",
-      details: ["Cash gifts are appreciated", "GCash: 0921 397 3751"],
     },
   ];
 
