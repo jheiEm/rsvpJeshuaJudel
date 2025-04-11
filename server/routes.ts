@@ -162,8 +162,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/admin/guest-messages", isAuthenticated, async (req, res) => {
     try {
       // For admin, get ALL messages regardless of approval status
-      const query = "SELECT * FROM guest_messages ORDER BY created_at DESC";
-      const messages = await storage.getGuestMessages(); // This will get all approved messages
+      const messages = await storage.getGuestMessages(true); // Pass true to get all messages including unapproved ones
       
       res.json(messages);
     } catch (error) {
@@ -338,61 +337,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Admin routes already defined above
-  
-  // Protected admin routes - only accessible to authenticated admins
-  
-  // Admin route to get guest messages (including unapproved ones)
-  app.get("/api/admin/guest-messages", isAuthenticated, async (req, res) => {
-    try {
-      const messages = await storage.getGuestMessages(true); // true = adminView
-      res.json(messages);
-    } catch (error) {
-      console.error("Error fetching guest messages:", error);
-      res.status(500).json({
-        message: "Failed to retrieve guest messages"
-      });
-    }
-  });
-  
-  // Guest message approval
-  app.put("/api/admin/guest-messages/:id/approve", isAuthenticated, async (req, res) => {
-    try {
-      const id = parseInt(req.params.id);
-      const { approved } = req.body;
-      
-      const updatedMessage = await storage.updateGuestMessageApproval(id, approved);
-      
-      if (!updatedMessage) {
-        return res.status(404).json({ message: "Message not found" });
-      }
-      
-      res.json({
-        message: `Message ${approved ? 'approved' : 'unapproved'} successfully`,
-        data: updatedMessage
-      });
-    } catch (error) {
-      console.error("Error updating message approval:", error);
-      res.status(500).json({ message: "Failed to update message approval" });
-    }
-  });
-  
-  // Delete guest message
-  app.delete("/api/admin/guest-messages/:id", isAuthenticated, async (req, res) => {
-    try {
-      const id = parseInt(req.params.id);
-      const success = await storage.deleteGuestMessage(id);
-      
-      if (!success) {
-        return res.status(404).json({ message: "Message not found or could not be deleted" });
-      }
-      
-      res.json({ message: "Message deleted successfully" });
-    } catch (error) {
-      console.error("Error deleting message:", error);
-      res.status(500).json({ message: "Failed to delete message" });
-    }
-  });
+  // Admin routes for guest messages are already defined above
   
   // Music Endpoints
   
