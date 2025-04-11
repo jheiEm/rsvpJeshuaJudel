@@ -18,20 +18,20 @@ const EntourageSection = ({ title, left, right }: EntourageSectionProps) => {
   const bridesmaidIndex = right.findIndex(item => item.title === "Bridesmaid");
   const bridesmaidCard = bridesmaidIndex >= 0 ? right[bridesmaidIndex] : null;
   
-  // Find "To Light Our Path" card to move it to the bottom
-  const lightPathIndex = right.findIndex(item => item.title === "To Light Our Path");
-  const lightPathCard = lightPathIndex >= 0 ? right[lightPathIndex] : null;
-  
-  // Create a new filtered right array without the special cards
+  // Find the Bridesmaid card to display separately
+  // We'll leave the "To Light Our Path" card in its original position in the right column
   const filteredRight = right.filter(item => 
-    item.title !== "Bridesmaid" && item.title !== "To Light Our Path"
+    item.title !== "Bridesmaid"
   );
   
-  // Add the "To Light Our Path" card to the last position in left
+  // Create balanced columns that look good visually
   const adjustedLeft = [...left];
-  if (lightPathCard) {
-    adjustedLeft.push(lightPathCard);
-  }
+  
+  // Only add "To Light Our Path" if it should be in the left column
+  // We're moving it back to right column based on user feedback
+  // if (lightPathCard) {
+  //   adjustedLeft.push(lightPathCard);
+  // }
   
   return (
     <div className="mb-14 relative">
