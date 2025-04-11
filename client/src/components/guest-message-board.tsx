@@ -42,8 +42,16 @@ const GuestMessageBoard: React.FC = () => {
     queryKey: ['/api/guest-messages'],
     queryFn: async () => {
       try {
-        const response = await apiRequest<GuestMessage[]>('/api/guest-messages');
-        return response;
+        const response = await fetch('/api/guest-messages', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+        if (!response.ok) {
+          throw new Error('Failed to fetch messages');
+        }
+        return response.json();
       } catch (error) {
         console.error('Error fetching guest messages:', error);
         throw error;
